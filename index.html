@@ -3,29 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mensaje Aleatorio</title>
+<title>Mensaje</title>
 
 <style>
   body {
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    height:100vh;
     background:#000;
-    font-family:sans-serif;
-    overflow:hidden;
-    padding:0;
     margin:0;
+    padding:0;
+    height:100vh;
+    width:100vw;
+    overflow:hidden;
+    font-family:sans-serif;
+    position:relative;
   }
 
-  /* Caja del mensaje */
   #mensaje {
-    font-size: 2.8em;
-    max-width: 90%;
+    position:absolute;
+    font-size: 2.4em;
+    max-width: 85%;
     text-align:center;
-    padding:22px 30px;
+    padding:20px 25px;
     background:#fff;
-    border-radius:25px;
+    border-radius:20px;
     color:#000;
     line-height:1.1;
 
@@ -35,10 +34,9 @@
       0 0 28px #00ff6a,
       0 0 40px #ff009d;
 
-    animation: glow 1s linear infinite; /* Más rápido */
+    animation: glow 1s linear infinite;
   }
 
-  /* Neón animado más rápido */
   @keyframes glow {
     0% {
       box-shadow:
@@ -62,14 +60,15 @@
         0 0 55px #ff009d;
     }
   }
-
 </style>
 
 </head>
 <body>
+
 <div id="mensaje"></div>
 
 <script>
+// LISTA
 const mensajes = [
   "Bésale la mejilla a alguien del grupo",
   "Brinda por la persona más feliz aquí",
@@ -122,8 +121,26 @@ const mensajes = [
   "Di tu edad pero cantado"
 ];
 
-document.getElementById("mensaje").textContent =
-  mensajes[Math.floor(Math.random() * mensajes.length)];
+// Secuencia continua
+let ultimoIndex = localStorage.getItem("ultimoIndex");
+ultimoIndex = ultimoIndex ? parseInt(ultimoIndex) : -1;
+
+let nuevoIndex = ultimoIndex + 1;
+if (nuevoIndex >= mensajes.length) nuevoIndex = 0;
+
+// Mostrar
+document.getElementById("mensaje").textContent = mensajes[nuevoIndex];
+
+// Guardar progreso
+localStorage.setItem("ultimoIndex", nuevoIndex);
+
+// Posición aleatoria en cada escaneo
+const mensajeDiv = document.getElementById("mensaje");
+const top = Math.random() * 55 + 10;
+const left = Math.random() * 55 + 10;
+mensajeDiv.style.top = top + "vh";
+mensajeDiv.style.left = left + "vw";
+
 </script>
 
 </body>
