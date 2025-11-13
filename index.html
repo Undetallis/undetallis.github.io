@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mensaje Aleatorio</title>
+<title>Mensaje Aleatorio (Secuencial)</title>
 
 <style>
   body {
@@ -15,7 +15,7 @@
     overflow:hidden;
     padding:0;
     margin:0;
-    background:#000; /* color de fondo base */
+    background:#000;
     position: relative;
   }
 
@@ -27,11 +27,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('fondo.png'); /* TU IMAGEN */
-    background-size: 350px; 
+    background-image: url('fondo.png'); /* <<--- pon aquí tu imagen */
+    background-size: 350px;
     background-repeat: repeat;
     background-position: center;
-    opacity: 0.12; /* efecto tenue tipo watermark */
+    opacity: 0.12; /* efecto suave tipo watermark */
     pointer-events: none;
     z-index: -1;
   }
@@ -80,10 +80,9 @@
         0 0 55px #ff009d;
     }
   }
-
 </style>
-
 </head>
+
 <body>
 
 <div id="mensaje"></div>
@@ -141,8 +140,23 @@ const mensajes = [
   "Di tu edad pero cantado"
 ];
 
-document.getElementById("mensaje").textContent =
-  mensajes[Math.floor(Math.random() * mensajes.length)];
+// Leer progreso anterior
+let index = localStorage.getItem("indexMensaje");
+
+if (index === null) index = 0;
+else index = parseInt(index);
+
+// Mostrar mensaje
+document.getElementById("mensaje").textContent = mensajes[index];
+
+// Avanzar al siguiente
+index++;
+
+// Reiniciar si llega al final
+if (index >= mensajes.length) index = 0;
+
+// Guardar avance
+localStorage.setItem("indexMensaje", index);
 </script>
 
 </body>
