@@ -8,45 +8,61 @@
 <style>
   body {
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:center;
     height:100vh;
     background:#000;
-    color:#fff;
+    padding-top:60px;
     font-family:sans-serif;
-    padding:20px;
     overflow:hidden;
   }
 
+  /* Contenedor con fondo blanco y borde neon multicolor */
   #mensaje {
-    font-size: 2.2em;
+    font-size: 2.6em;
     max-width: 90%;
     text-align:center;
+    padding:18px 25px;
+    background:#fff;
+    border-radius:22px;
+    color:#000;
+    line-height:1.1;
 
-    /* Efecto neón */
-    color:#ff00ff;
-    text-shadow:
-      0 0 8px #ff00ff,
-      0 0 15px #ff00ff,
-      0 0 25px #ff00ff;
+    position: relative;
 
-    /* Animaciones combinadas */
-    animation: flicker 0.18s infinite alternate,
-               bounce 3s ease-in-out infinite;
+    /* Borde neon animado */
+    box-shadow: 
+      0 0 10px #ff00ff,
+      0 0 18px #00ffff,
+      0 0 25px #00ff6a,
+      0 0 35px #ff009d;
+
+    animation: glow 2s linear infinite;
   }
 
-  /* Titileo neón */
-  @keyframes flicker {
-    0%   { opacity: 0.85; text-shadow: 0 0 6px #ff00ff, 0 0 14px #ff00ff; }
-    50%  { opacity: 1;    text-shadow: 0 0 10px #ff00ff, 0 0 22px #ff00ff; }
-    100% { opacity: 0.9;  text-shadow: 0 0 8px #ff00ff, 0 0 18px #ff00ff; }
-  }
-
-  /* Movimiento divertido (rebote suave) */
-  @keyframes bounce {
-    0%   { transform: translateY(0); }
-    50%  { transform: translateY(-12px); }
-    100% { transform: translateY(0); }
+  /* Animación del contorno neón multicolor */
+  @keyframes glow {
+    0% {
+      box-shadow:
+        0 0 16px #ff00ff,
+        0 0 25px #00e5ff,
+        0 0 35px #00ff6a,
+        0 0 45px #ff009d;
+    }
+    50% {
+      box-shadow:
+        0 0 20px #00ffff,
+        0 0 30px #ff00ff,
+        0 0 40px #ffea00,
+        0 0 55px #00ff6a;
+    }
+    100% {
+      box-shadow:
+        0 0 16px #ff00ff,
+        0 0 25px #00e5ff,
+        0 0 35px #00ff6a,
+        0 0 45px #ff009d;
+    }
   }
 </style>
 
