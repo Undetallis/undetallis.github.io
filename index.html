@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mensaje Aleatorio</title>
+<style>
+  body {
+    display:flex; align-items:center; justify-content:center;
+    height:100vh; background:#111; color:#fff;
+    font-family:sans-serif; font-size:2em; text-align:center; padding:20px;
+  }
+</style>
+</head>
+<body>
+<div id="mensaje"></div>
+
+<script>
+const mensajes = [
+  "Tómate un shot con quien tengas al frente",
+  "Besa a alguien del grupo",
+  "Haz un brindis por la persona más feliz",
+  "Baila por 10 segundos sin música",
+  "Dile algo bonito a quien tienes cerca",
+  "Cuenta un secreto… o bebe si no puedes",
+  "Haz tu mejor pose de foto",
+  "Grita tu palabra favorita",
+  "Haz un mini show de 5 segundos",
+  "Mira al que más te gusta y brinda"
+];
+
+document.getElementById("mensaje").textContent =
+  mensajes[Math.floor(Math.random() * mensajes.length)];
+</script>
+</body>
+</html>
