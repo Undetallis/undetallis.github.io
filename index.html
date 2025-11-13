@@ -128,19 +128,37 @@ ultimoIndex = ultimoIndex ? parseInt(ultimoIndex) : -1;
 let nuevoIndex = ultimoIndex + 1;
 if (nuevoIndex >= mensajes.length) nuevoIndex = 0;
 
-// Mostrar
 document.getElementById("mensaje").textContent = mensajes[nuevoIndex];
 
 // Guardar progreso
 localStorage.setItem("ultimoIndex", nuevoIndex);
 
-// Posición aleatoria en cada escaneo
-const mensajeDiv = document.getElementById("mensaje");
-const top = Math.random() * 55 + 10;
-const left = Math.random() * 55 + 10;
-mensajeDiv.style.top = top + "vh";
-mensajeDiv.style.left = left + "vw";
+// **Nueva lógica segura de posición**
+function posicionarCaja() {
+  const caja = document.getElementById("mensaje");
 
+  const screenW = window.innerWidth;
+  const screenH = window.innerHeight;
+
+  const boxW = caja.offsetWidth;
+  const boxH = caja.offsetHeight;
+
+  // Nuevos márgenes seguros (evitan barra de iPhone y bordes)
+  const margenTop = 80;     // evita parte superior
+  const margenBottom = 80;  // evita desaparecer abajo
+  const margenSides = 30;   // evita salirse por los lados
+
+  const maxLeft = screenW - boxW - margenSides;
+  const maxTop = screenH - boxH - margenBottom;
+
+  const randomLeft = margenSides + Math.random() * maxLeft;
+  const randomTop = margenTop + Math.random() * maxTop;
+
+  caja.style.left = randomLeft + "px";
+  caja.style.top = randomTop + "px";
+}
+
+window.onload = posicionarCaja;
 </script>
 
 </body>
