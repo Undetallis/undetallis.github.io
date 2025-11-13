@@ -8,62 +8,61 @@
 <style>
   body {
     display:flex;
-    align-items:flex-start;
+    align-items:center;
     justify-content:center;
     height:100vh;
     background:#000;
-    padding-top:60px;
     font-family:sans-serif;
     overflow:hidden;
+    padding:0;
+    margin:0;
   }
 
-  /* Contenedor con fondo blanco y borde neon multicolor */
+  /* Caja del mensaje */
   #mensaje {
-    font-size: 2.6em;
+    font-size: 2.8em;
     max-width: 90%;
     text-align:center;
-    padding:18px 25px;
+    padding:22px 30px;
     background:#fff;
-    border-radius:22px;
+    border-radius:25px;
     color:#000;
     line-height:1.1;
 
-    position: relative;
-
-    /* Borde neon animado */
     box-shadow: 
-      0 0 10px #ff00ff,
-      0 0 18px #00ffff,
-      0 0 25px #00ff6a,
-      0 0 35px #ff009d;
+      0 0 12px #ff00ff,
+      0 0 20px #00ffff,
+      0 0 28px #00ff6a,
+      0 0 40px #ff009d;
 
-    animation: glow 2s linear infinite;
+    animation: glow 1s linear infinite; /* Más rápido */
   }
 
-  /* Animación del contorno neón multicolor */
+  /* Neón animado más rápido */
   @keyframes glow {
     0% {
       box-shadow:
-        0 0 16px #ff00ff,
-        0 0 25px #00e5ff,
-        0 0 35px #00ff6a,
-        0 0 45px #ff009d;
+        0 0 18px #ff00ff,
+        0 0 30px #00e5ff,
+        0 0 40px #00ff6a,
+        0 0 55px #ff009d;
     }
     50% {
       box-shadow:
-        0 0 20px #00ffff,
-        0 0 30px #ff00ff,
-        0 0 40px #ffea00,
-        0 0 55px #00ff6a;
+        0 0 26px #00ffff,
+        0 0 38px #ff00ff,
+        0 0 50px #ffea00,
+        0 0 70px #00ff6a;
     }
     100% {
       box-shadow:
-        0 0 16px #ff00ff,
-        0 0 25px #00e5ff,
-        0 0 35px #00ff6a,
-        0 0 45px #ff009d;
+        0 0 18px #ff00ff,
+        0 0 30px #00e5ff,
+        0 0 40px #00ff6a,
+        0 0 55px #ff009d;
     }
   }
+
 </style>
 
 </head>
@@ -120,18 +119,7 @@ const mensajes = [
   "Imita un animal por 3 segundos",
   "Si estás feliz, da un saltico",
   "Regala un cumplido corto y real",
-  "Di tu edad pero cantado",
-  "Tómate un shot con quien tengas al frente",
-  "Besa a alguien del grupo",
-  "Haz un brindis por la persona más feliz",
-  "Baila por 10 segundos sin música",
-  "Dile algo bonito a quien tienes cerca",
-  "Cuenta un secreto… o bebe si no puedes",
-  "Haz tu mejor pose de foto",
-  "Grita tu palabra favorita",
-  "Haz un mini show de 5 segundos",
-  "Mira al que más te gusta y brinda",
-  "Tómate un shot con quien tengas enfrente"
+  "Di tu edad pero cantado"
 ];
 
 document.getElementById("mensaje").textContent =
