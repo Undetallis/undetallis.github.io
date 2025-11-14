@@ -20,15 +20,15 @@
   }
 
   /* Fondo PNG animado */
-  body::before {
+body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background-image: url('./assets/fondo.jpg'); /* tu fondo */
-    background-size: 320px;
-    background-repeat: repeat;
-    background-position: center;
-    opacity: 0.48;           
+    background-image: url('./assets/fondo.jpg'); /* tu imagen */
+    background-size: cover;       /* <--- imagen completa */
+    background-repeat: no-repeat; /* <--- sin mosaico */
+    background-position: center;  
+    opacity: 0.48;
     z-index: -1;
     pointer-events: none;
 
@@ -36,7 +36,7 @@
       vibrar 0.25s infinite linear,
       mover 6s infinite ease-in-out,
       luz 1.4s infinite ease-in-out;
-  }
+}
 
   /* Vibración */
   @keyframes vibrar {
