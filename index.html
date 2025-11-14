@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mensaje Aleatorio (Secuencial)</title>
+<title>Mensaje Secuencial</title>
 
 <style>
   body {
@@ -19,7 +19,6 @@
     position: relative;
   }
 
-  /* Fondo estilo patrón suave */
   body::before {
     content: "";
     position: fixed;
@@ -27,16 +26,15 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('fondo.png'); /* <<--- pon aquí tu imagen */
+    background-image: url('fondo.png');
     background-size: 350px;
     background-repeat: repeat;
     background-position: center;
-    opacity: 0.12; /* efecto suave tipo watermark */
+    opacity: 0.12;
     pointer-events: none;
     z-index: -1;
   }
 
-  /* Caja del mensaje */
   #mensaje {
     font-size: 2.8em;
     max-width: 90%;
@@ -56,7 +54,6 @@
     animation: glow 1s linear infinite;
   }
 
-  /* Neón animado */
   @keyframes glow {
     0% {
       box-shadow:
@@ -140,22 +137,20 @@ const mensajes = [
   "Di tu edad pero cantado"
 ];
 
-// Leer progreso anterior
+// Obtener índice anterior (por dispositivo)
 let index = localStorage.getItem("indexMensaje");
 
 if (index === null) index = 0;
 else index = parseInt(index);
 
-// Mostrar mensaje
+// Mostrar mensaje actual
 document.getElementById("mensaje").textContent = mensajes[index];
 
-// Avanzar al siguiente
+// Calcular siguiente
 index++;
-
-// Reiniciar si llega al final
 if (index >= mensajes.length) index = 0;
 
-// Guardar avance
+// Guardar para la próxima vez
 localStorage.setItem("indexMensaje", index);
 </script>
 
