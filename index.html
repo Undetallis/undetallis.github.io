@@ -19,6 +19,7 @@
     position: relative;
   }
 
+  /* Fondo con tu imagen */
   body::before {
     content: "";
     position: fixed;
@@ -26,12 +27,12 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('fondo.png');
-    background-size: 350px;
-    background-repeat: repeat;
+    background-image: url('assets/fondo.png'); /* ← AQUÍ TU IMAGEN */
+    background-size: 300px;      /* ajusta el tamaño del patrón */
+    background-repeat: repeat;   /* repetido */
     background-position: center;
-    opacity: 0.12;
-    pointer-events: none;
+    opacity: 0.12;               /* baja opacidad */
+    pointer-events: none;        /* no bloquea interacción */
     z-index: -1;
   }
 
