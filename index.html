@@ -26,7 +26,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('fondo.png'); /* tu fondo */
+    background-image: url('fondo.png');
     background-size: 350px;
     background-repeat: repeat;
     background-position: center;
@@ -85,14 +85,11 @@
 <div id="mensaje"></div>
 
 <script>
-// -------------------------------------------
-// LISTA COMPLETA DE MENSAJES
-// -------------------------------------------
 const mensajes = [
   "Cuenta un secreto… o inventa uno",
   "Haz tu mejor pose de foto y mantenla",
   "Grita tu palabra favorita",
-  "ve a pedirle una cancion al DJ",
+  "Ve a pedirle una canción al DJ",
   "Dale un abrazo al primero que te mire",
   "Haz un brindis mirando al techo",
   "Róbale un sorbo a alguien… sin avisar",
@@ -100,16 +97,16 @@ const mensajes = [
   "Baila como robot por 8 segundos",
   "Intercambia tu bebida con alguien",
   "Invéntate un apodo y dilo fuerte",
-  "pagas otra ronda,
-  "haz el 4",
+  "Pagas otra ronda",
+  "Haz el 4",
   "Da 5 giros en el lugar",
-  "cambia 1 zapato con alguien del grupo por 1 hora",
+  "Cambia 1 zapato con alguien del grupo por 1 hora",
   "Haz una predicción del futuro",
   "Choca las copas con tres personas",
   "Di un secreto… a medias",
   "Camina en cámara lenta por 5 segundos",
   "Intercambia accesorios con alguien",
-  "confieza quien te gusta de donde estas",
+  "Confiesa quién te gusta de donde estás",
   "Di la primera palabra que te venga a la mente",
   "Haz contacto visual intenso por 4 segundos",
   "Pide una selfie grupal",
@@ -141,10 +138,10 @@ const mensajes = [
   "Haz tu mejor pose de superhéroe",
   "Brinda por la persona más callada aquí",
   "Di una palabra rara como si fuera importante",
-  "Camina pasos como modelo profesional",
+  "Camina 3 pasos como modelo profesional",
   "Haz contacto visual con alguien y guiña",
   "Haz una risa malévola por 2 segundos",
-  "Susurra al oído de alguien y que nadie mas sepa",
+  "Susurra al oído de alguien y que nadie más sepa",
   "Ponte serio como si fuera una reunión importante",
   "Haz un brindis por algo random ya!",
   "Imita a un personaje de película",
@@ -153,23 +150,20 @@ const mensajes = [
   "Haz un sonido de trompeta con la boca",
   "Haz un movimiento raro con las cejas",
   "Di algo muy serio… y ríete después",
-  "da 5 giros",
+  "Da 5 giros",
   "Haz un gesto de sorpresa exagerado",
   "Dile a alguien ‘olaramercy’",
   "Baila en cámara lenta por 10 segundos",
   "Haz tu mejor pose de TikTok",
-  "Di un cumplido ramdom",
+  "Di un cumplido random",
   "Haz un movimiento de robot con un brazo",
   "Di el nombre de alguien como si lo presentaras en un show",
-  "Dile a alguien ‘te ganaste un patacon’",
+  "Dile a alguien ‘te ganaste un patacón’",
   "Muévete como si caminaras sobre nubes",
   "Di tu signo como si fuera ultrasecreto",
-  "Imita el sonido de abrir una botella",
+  "Imita el sonido de abrir una botella"
 ];
 
-// -------------------------------------------
-// MOSTRAR MENSAJE ALEATORIO
-// -------------------------------------------
 const mensajeAleatorio = mensajes[Math.floor(Math.random() * mensajes.length)];
 document.getElementById("mensaje").textContent = mensajeAleatorio;
 </script>
