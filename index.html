@@ -21,7 +21,7 @@
             background-position: center;
             background-repeat: no-repeat;
 
-            /* Opacidad del fondo (oscurecido) */
+            /* Oscurecer suavemente */
             background-color: rgba(0, 0, 0, 0.5);
             background-blend-mode: darken;
 
@@ -34,13 +34,25 @@
             to { background-position: center bottom; }
         }
 
+        /* Caja del mensaje */
         #mensaje {
-            font-size: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px 35px;
+            border-radius: 20px;
+            font-size: 1.8rem;
             font-weight: bold;
-            color: white;
-            text-shadow: 0px 0px 10px black;
+            color: #000;
             width: 80%;
+            max-width: 700px;
             text-align: center;
+
+            /* EFECTO NEÓN */
+            border: 3px solid #fff;
+            box-shadow:
+                0 0 8px #00f7ff,
+                0 0 16px #00f7ff,
+                0 0 30px #00f7ff,
+                0 0 50px #00f7ff;
         }
     </style>
 </head>
@@ -120,45 +132,7 @@
             "¿Qué es lo más maduro que has hecho?",
             "¿Qué verdad no soportaste escuchar?",
             "¿Qué te hace sentir querido?",
-            "¿Qué te gustaría olvidar?",
-            "¿Qué hubiera cambiado tu vida si lo hubieras hecho?",
-            "¿A quién extrañas pero finges que no?",
-            "¿Qué aprendiste demasiado tarde?",
-            "¿Qué te hubiera gustado decir antes?",
-            "Confiesa algo que te dolió más de lo que dijiste.",
-            "¿Qué te ha mantenido despierto por noches?",
-            "¿Qué decisión te cambió la vida?",
-            "¿Qué es lo más real que te han dicho?",
-            "¿Qué te hizo romperte?",
-            "¿Qué te sana sin darte cuenta?",
-            "¿Qué te gustaría que alguien notara?",
-            "¿Qué verdad aún evitas?",
-            "¿Qué te da miedo admitir?",
-            "Confiesa un pensamiento que te asusta.",
-            "¿Qué te hace sentir vivo?",
-            "¿Qué versión de ti extrañas?",
-            "¿Qué parte de ti estás reconstruyendo?",
-            "¿Qué te cuesta aceptar?",
-            "¿Qué harías si supieras que no fallas?",
-            "¿Qué deseo nunca se te ha cumplido?",
-            "¿Qué prometiste y no cumpliste?",
-            "¿Qué persona te cambió?",
-            "¿Qué secreto no te deja avanzar?",
-            "¿Qué emoción te cuesta mostrar?",
-            "¿Qué aprendiste con dolor?",
-            "¿Qué relación no has cerrado?",
-            "Confiesa lo que más te dolió perder.",
-            "¿Qué estás intentando superar?",
-            "¿Qué abrazo necesitas?",
-            "¿Qué parte de ti escondes?",
-            "¿Qué te hubiera gustado escuchar ese día?",
-            "¿Qué momento repetirías?",
-            "¿Qué te da miedo soltar?",
-            "¿Qué te hubiera hecho feliz?",
-            "¿Qué emoción estás evitando?",
-            "¿Qué te hirió sin querer?",
-            "¿Qué verdad aún te duele?",
-            "¿Qué te hubiera gustado comprender antes?"
+            "¿Qué te gustaría olvidar?"
         ];
 
         // Mezclar mensajes al azar
@@ -181,7 +155,6 @@
 
         mostrarMensaje();
 
-        // Cambiar mensaje cada vez que alguien entre o recargue
         window.onload = mostrarMensaje;
     </script>
 </body>
