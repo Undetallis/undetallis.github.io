@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Mensaje Aleatorio</title>
-
 <style>
+  :root{
+    --bg-opacity: 0.36; /* cambia esto si quieres más/menos visibilidad */
+  }
+
+  html,body{
+    height:100%;
+    margin:0;
+  }
+
   body {
     display:flex;
     align-items:center;
     justify-content:center;
     height:100vh;
-    font-family:sans-serif;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     overflow:hidden;
     padding:0;
     margin:0;
@@ -19,154 +27,158 @@
     position: relative;
   }
 
-  /* Fondo con tu imagen */
+  /* Fondo con tu imagen (asegúrate de tener ./assets/fondo.jpg) */
   body::before {
     content: "";
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('assets/fondo.jpg'); /* ← AQUÍ TU IMAGEN JPG */
-    background-size: 300px;      
-    background-repeat: repeat;   
-    background-position: center;
-    opacity: 0.12;               
-    pointer-events: none;        
+    inset: 0; /* top:0; right:0; bottom:0; left:0; */
+    background-image: url('./assets/fondo.jpg');
+    background-size: cover;        /* ocupa toda la pantalla (cambia a 'contain' o '300px' si quieres patrón) */
+    background-repeat: no-repeat;  
+    background-position: center center;
+    opacity: var(--bg-opacity);     /* opacidad más alta para que se vea claramente */
     z-index: -1;
+    pointer-events: none;
+    filter: saturate(1.05) contrast(1.03); /* pequeño ajuste visual */
   }
 
   #mensaje {
     font-size: 2.8em;
-    max-width: 90%;
+    max-width: 92%;
     text-align:center;
     padding:22px 30px;
-    background:#fff;
-    border-radius:25px;
+    background:#ffffff;
+    border-radius:28px;
     color:#000;
-    line-height:1.1;
-
-    box-shadow: 
-      0 0 12px #ff00ff,
-      0 0 20px #00ffff,
-      0 0 28px #00ff6a,
-      0 0 40px #ff009d;
-
+    line-height:1.08;
+    box-shadow:
+      0 0 12px rgba(255,0,255,0.25),
+      0 0 20px rgba(0,255,255,0.18),
+      0 0 28px rgba(0,255,106,0.12),
+      0 0 40px rgba(255,0,157,0.10);
     animation: glow 1s linear infinite;
   }
 
   @keyframes glow {
     0% {
+      transform: translateZ(0);
       box-shadow:
-        0 0 18px #ff00ff,
-        0 0 30px #00e5ff,
-        0 0 40px #00ff6a,
-        0 0 55px #ff009d;
+        0 0 18px rgba(255,0,255,0.35),
+        0 0 30px rgba(0,229,255,0.25),
+        0 0 40px rgba(0,255,106,0.18);
     }
     50% {
       box-shadow:
-        0 0 26px #00ffff,
-        0 0 38px #ff00ff,
-        0 0 50px #ffea00,
-        0 0 70px #00ff6a;
+        0 0 26px rgba(0,255,255,0.4),
+        0 0 38px rgba(255,0,255,0.35),
+        0 0 50px rgba(255,234,0,0.22);
     }
     100% {
       box-shadow:
-        0 0 18px #ff00ff,
-        0 0 30px #00e5ff,
-        0 0 40px #00ff6a,
-        0 0 55px #ff009d;
+        0 0 18px rgba(255,0,255,0.35),
+        0 0 30px rgba(0,229,255,0.25),
+        0 0 40px rgba(0,255,106,0.18);
     }
+  }
+
+  /* Ajustes responsivos */
+  @media (max-width: 420px) {
+    #mensaje { font-size: 1.45em; padding:16px 18px; border-radius:18px; }
   }
 </style>
 </head>
-
 <body>
 
-<div id="mensaje"></div>
+<div id="mensaje">Cargando...</div>
 
 <script>
-const mensajes = [
-  "Cuenta un secreto… o inventa uno",
-  "Haz tu mejor pose de foto y mantenla",
-  "Grita tu palabra favorita",
-  "Ve a pedirle una canción al DJ",
-  "Dale un abrazo al primero que te mire",
-  "Haz un brindis mirando al techo",
-  "Róbale un sorbo a alguien… sin avisar",
-  "Di tu crush en voz alta",
-  "Baila como robot por 8 segundos",
-  "Intercambia tu bebida con alguien",
-  "Invéntate un apodo y dilo fuerte",
-  "Pagas otra ronda",
-  "Haz el 4",
-  "Da 5 giros en el lugar",
-  "Cambia 1 zapato con alguien del grupo por 1 hora",
-  "Haz una predicción del futuro",
-  "Choca las copas con tres personas",
-  "Di un secreto… a medias",
-  "Camina en cámara lenta por 5 segundos",
-  "Intercambia accesorios con alguien",
-  "Confiesa quién te gusta de donde estás",
-  "Di la primera palabra que te venga a la mente",
-  "Haz contacto visual intenso por 4 segundos",
-  "Pide una selfie grupal",
-  "Di algo en otro idioma inventado",
-  "Imita a alguien del grupo",
-  "Haz un gesto diabólico",
-  "Brinda por el amor propio",
-  "Dedícale tu bebida a alguien",
-  "Repite una frase épica como si fuera cine",
-  "Haz un sonido raro… y no expliques",
-  "Baila sin música por 6 segundos",
-  "Brinda por el pasado",
-  "Brinda por el futuro",
-  "Di lo mejor que te pasó hoy",
-  "Haz una risa falsa exagerada",
-  "Adivina el signo de alguien",
-  "Da un pequeño discurso sin sentido",
-  "Imita un animal por 3 segundos",
-  "Si estás feliz, da un saltico",
-  "Di tu edad pero cantado",
-  "Haz una pose épica como si fueras portada de revista",
-  "Imita un sonido de animal durante 3 segundos",
-  "Haz un bailecito de victoria sin razón",
-  "Toma un sorbo con los ojos cerrados",
-  "Haz un gesto de amor dramático con las manos",
-  "Regálale una sonrisa exagerada a alguien",
-  "Toca tu bebida con la de alguien sin hacer ruido",
-  "Haz un mini salto diciendo ‘¡vamos!’",
-  "Haz tu mejor pose de superhéroe",
-  "Brinda por la persona más callada aquí",
-  "Di una palabra rara como si fuera importante",
-  "Camina 3 pasos como modelo profesional",
-  "Haz contacto visual con alguien y guiña",
-  "Haz una risa malévola por 2 segundos",
-  "Susurra al oído de alguien y que nadie más sepa",
-  "Ponte serio como si fuera una reunión importante",
-  "Haz un brindis por algo random ya!",
-  "Imita a un personaje de película",
-  "Dile a alguien ‘cara e verga’",
-  "Toca el hombro de alguien y volteate",
-  "Haz un sonido de trompeta con la boca",
-  "Haz un movimiento raro con las cejas",
-  "Di algo muy serio… y ríete después",
-  "Da 5 giros",
-  "Haz un gesto de sorpresa exagerado",
-  "Dile a alguien ‘olaramercy’",
-  "Baila en cámara lenta por 10 segundos",
-  "Haz tu mejor pose de TikTok",
-  "Di un cumplido random",
-  "Haz un movimiento de robot con un brazo",
-  "Di el nombre de alguien como si lo presentaras en un show",
-  "Dile a alguien ‘te ganaste un patacón’",
-  "Muévete como si caminaras sobre nubes",
-  "Di tu signo como si fuera ultrasecreto",
-  "Imita el sonido de abrir una botella"
-];
+document.addEventListener('DOMContentLoaded', () => {
+  const mensajes = [
+    "Cuenta un secreto… o inventa uno",
+    "Haz tu mejor pose de foto y mantenla",
+    "Grita tu palabra favorita",
+    "Ve a pedirle una canción al DJ",
+    "Dale un abrazo al primero que te mire",
+    "Haz un brindis mirando al techo",
+    "Róbale un sorbo a alguien… sin avisar",
+    "Di tu crush en voz alta",
+    "Baila como robot por 8 segundos",
+    "Intercambia tu bebida con alguien",
+    "Invéntate un apodo y dilo fuerte",
+    "Pagas otra ronda",
+    "Haz el 4",
+    "Da 5 giros en el lugar",
+    "Cambia 1 zapato con alguien del grupo por 1 hora",
+    "Haz una predicción del futuro",
+    "Choca las copas con tres personas",
+    "Di un secreto… a medias",
+    "Camina en cámara lenta por 5 segundos",
+    "Intercambia accesorios con alguien",
+    "Confiesa quién te gusta de donde estás",
+    "Di la primera palabra que te venga a la mente",
+    "Haz contacto visual intenso por 4 segundos",
+    "Pide una selfie grupal",
+    "Di algo en otro idioma inventado",
+    "Imita a alguien del grupo",
+    "Haz un gesto diabólico",
+    "Brinda por el amor propio",
+    "Dedícale tu bebida a alguien",
+    "Repite una frase épica como si fuera cine",
+    "Haz un sonido raro… y no expliques",
+    "Baila sin música por 6 segundos",
+    "Brinda por el pasado",
+    "Brinda por el futuro",
+    "Di lo mejor que te pasó hoy",
+    "Haz una risa falsa exagerada",
+    "Adivina el signo de alguien",
+    "Da un pequeño discurso sin sentido",
+    "Imita un animal por 3 segundos",
+    "Si estás feliz, da un saltico",
+    "Di tu edad pero cantado",
+    "Haz una pose épica como si fueras portada de revista",
+    "Imita un sonido de animal durante 3 segundos",
+    "Haz un bailecito de victoria sin razón",
+    "Toma un sorbo con los ojos cerrados",
+    "Haz un gesto de amor dramático con las manos",
+    "Regálale una sonrisa exagerada a alguien",
+    "Toca tu bebida con la de alguien sin hacer ruido",
+    "Haz un mini salto diciendo ‘¡vamos!’",
+    "Haz tu mejor pose de superhéroe",
+    "Brinda por la persona más callada aquí",
+    "Di una palabra rara como si fuera importante",
+    "Camina 3 pasos como modelo profesional",
+    "Haz contacto visual con alguien y guiña",
+    "Haz una risa malévola por 2 segundos",
+    "Susurra al oído de alguien y que nadie más sepa",
+    "Ponte serio como si fuera una reunión importante",
+    "Haz un brindis por algo random ya!",
+    "Imita a un personaje de película",
+    "Dile a alguien ‘cara e verga’",
+    "Toca el hombro de alguien y volteate",
+    "Haz un sonido de trompeta con la boca",
+    "Haz un movimiento raro con las cejas",
+    "Di algo muy serio… y ríete después",
+    "Da 5 giros",
+    "Haz un gesto de sorpresa exagerado",
+    "Dile a alguien ‘olaramercy’",
+    "Baila en cámara lenta por 10 segundos",
+    "Haz tu mejor pose de TikTok",
+    "Di un cumplido random",
+    "Haz un movimiento de robot con un brazo",
+    "Di el nombre de alguien como si lo presentaras en un show",
+    "Dile a alguien ‘te ganaste un patacón’",
+    "Muévete como si caminaras sobre nubes",
+    "Di tu signo como si fuera ultrasecreto",
+    "Imita el sonido de abrir una botella"
+  ];
 
-const mensajeAleatorio = mensajes[Math.floor(Math.random() * mensajes.length)];
-document.getElementById("mensaje").textContent = mensajeAleatorio;
+  // escoger y mostrar
+  const mensaje = mensajes[Math.floor(Math.random() * mensajes.length)];
+  document.getElementById('mensaje').textContent = mensaje;
+
+  // Si quieres ajustar opacidad rápido desde la consola:
+  // document.documentElement.style.setProperty('--bg-opacity', '0.5');
+});
 </script>
 
 </body>
