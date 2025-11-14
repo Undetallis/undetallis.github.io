@@ -15,84 +15,65 @@
 </script>
 
 <style>
+  :root { --bg-opacity: 0.28; }
+
   html,body{height:100%;margin:0;padding:0;}
   body {
     display:flex;
-    flex-direction:column;
     align-items:center;
     justify-content:center;
     height:100vh;
-    background:#000;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     overflow:hidden;
-    font-family: system-ui, Roboto, Arial;
+    background:#000;
   }
 
-  /* Imagen JPG vibrando constantemente */
-  #imagenFondo {
+  /* Fondo JPG vibrando suavemente */
+  body::before{
+    content:"";
     position:fixed;
     inset:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
+    background-image: url('assets/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: var(--bg-opacity);
+    pointer-events:none;
     z-index:-1;
-    opacity:0.45;
-    animation:
-      shake 2s infinite ease-in-out,
-      neonPulse 1.8s infinite alternate ease-in-out;
+    animation: vibrar 0.9s infinite linear;
   }
 
-  @keyframes shake {
-    0%   { transform: translate(0,0) scale(1); }
-    20%  { transform: translate(-10px, 6px) scale(1.02); }
-    40%  { transform: translate(12px, -8px) scale(1.03); }
-    60%  { transform: translate(-14px, 9px) scale(1.02); }
-    80%  { transform: translate(8px, -5px) scale(1.02); }
-    100% { transform: translate(0,0) scale(1); }
-  }
-
-  @keyframes neonPulse {
-    0% {
-      filter: brightness(1.1) contrast(1.4) saturate(1.6)
-              drop-shadow(0 0 20px #ff00ff);
-    }
-    100% {
-      filter: brightness(1.5) contrast(2.0) saturate(2.3)
-              drop-shadow(0 0 40px #00ffff)
-              drop-shadow(0 0 55px #ff009d);
-    }
+  @keyframes vibrar {
+    0%   { transform: translate(0px,0px); }
+    25%  { transform: translate(-2px,1px); }
+    50%  { transform: translate(2px,-1px); }
+    75%  { transform: translate(-1px,2px); }
+    100% { transform: translate(0px,0px); }
   }
 
   #mensaje {
-    position:relative;
-    font-size:2rem;
-    max-width:90%;
+    font-size: 2.2rem;
+    max-width: 92%;
     text-align:center;
-    padding:20px 26px;
-    background:#fff;
-    border-radius:18px;
-    line-height:1.1;
-    animation: glow 1.2s infinite linear;
+    padding: 20px 28px;
+    background: #fff;
+    border-radius: 20px;
+    line-height:1.08;
+    color: #000;
+    box-shadow: 0 0 20px rgba(255,0,255,0.4);
   }
 
-  @keyframes glow {
-    0% { box-shadow:0 0 12px #ff00ff; }
-    50% { box-shadow:0 0 22px #00ffff; }
-    100% { box-shadow:0 0 12px #ff00ff; }
+  @media (max-width:420px){
+    #mensaje { font-size:1.25rem; padding:14px 16px; border-radius:14px; }
   }
 </style>
-
 </head>
-
 <body>
-
-  <img id="imagenFondo" src="assets/fondo.jpg">
-
   <div id="mensaje">Cargando…</div>
 
-  <!-- Firebase -->
+  <!-- FIREBASE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCJ8sSO65rTjF04Dl7VMEuhrLj_Z9yAICs",
@@ -108,7 +89,11 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    /* ----------------------------
+       LISTA DE MENSAJES (120)
+    ----------------------------- */
     const mensajes = [
+      /* (Aquí pego tus 120 mensajes EXACTOS tal cual sin modificar) */
       "Cuenta un secreto… o invéntate uno",
       "Haz tu mejor pose de foto y mantenla",
       "Ve a pedirle una canción al DJ",
@@ -257,28 +242,33 @@
       "¿Qué momento de tu vida repetirías?"
     ];
 
-    const indexRef = ref(db, "lastIndex");
+    const lastIndexRef = ref(db, "lastIndex");
     const contadorRef = ref(db, "contador");
+    
+    async function iniciar() {
+      try {
+        const snap = await get(lastIndexRef);
+        let index = snap.exists() ? snap.val() : 0;
 
-    // PROCESO PRINCIPAL (transacción real)
-    runTransaction(indexRef, (valorActual) => {
-      if (valorActual === null) return 0;
-      return (valorActual + 1) % mensajes.length;
-    }).then((result) => {
+        // mostrar mensaje
+        document.getElementById("mensaje").textContent = mensajes[index];
 
-      const indexFinal = result.snapshot.val();
-      document.getElementById("mensaje").textContent = mensajes[indexFinal];
+        // siguiente
+        const next = (index + 1) % mensajes.length;
 
-      // incrementa contador global también con transacción
-      runTransaction(contadorRef, (c) => (c || 0) + 1);
+        // actualizar Firebase
+        await set(lastIndexRef, next);
+        const snapCount = await get(contadorRef);
+        const count = snapCount.exists() ? snapCount.val() : 0;
+        await set(contadorRef, count + 1);
 
-    }).catch((err) => {
-      console.error(err);
-      document.getElementById("mensaje").textContent =
-        mensajes[Math.floor(Math.random()*mensajes.length)];
-    });
+      } catch(err) {
+        console.error(err);
+        document.getElementById("mensaje").textContent = "Error cargando mensaje";
+      }
+    }
 
+    iniciar();
   </script>
-
 </body>
 </html>
