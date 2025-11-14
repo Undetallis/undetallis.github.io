@@ -1,339 +1,158 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>UNDETALLIS — Mensajes Secuenciales</title>
-
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3GFTY2SWSM"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-3GFTY2SWSM');
-</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mensaje Secuencial</title>
 
 <style>
-  :root { --bg-opacity: 0.45; }
-
-  html,body{height:100%;margin:0;padding:0;}
   body {
     display:flex;
     align-items:center;
     justify-content:center;
     height:100vh;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    font-family:sans-serif;
     overflow:hidden;
+    padding:0;
+    margin:0;
     background:#000;
-    color:#000;
-    -webkit-font-smoothing:antialiased;
-    backface-visibility:hidden;
+    position: relative;
   }
 
-  /* Fondo JPG (neón + vibración) - optimizado para móviles */
-  body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background-image: url('assets/fondo.jpg');
-    background-size: cover;
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('fondo.png');
+    background-size: 350px;
+    background-repeat: repeat;
     background-position: center;
-    opacity: var(--bg-opacity);
-    pointer-events:none;
-    z-index:-1;
-
-    /* reduzco la intensidad de filtros en animación para móviles,
-       manteniendo el efecto neón visual */
-    filter: brightness(1.2) contrast(1.4) saturate(1.6);
-
-    will-change: transform, filter;
-    animation:
-      neonPulse 1.6s infinite ease-in-out alternate,
-      shake 2.0s infinite ease-in-out;
-  }
-
-  @keyframes neonPulse {
-    0% {
-      filter: brightness(1.12) contrast(1.35) saturate(1.5);
-      /* evito drop-shadow pesado en animación continua para rendimiento */
-    }
-    100% {
-      filter: brightness(1.45) contrast(1.9) saturate(1.9);
-    }
-  }
-
-  /* Shake optimizado: uso translate3d y valores más suaves para 60fps */
-  @keyframes shake {
-    0%   { transform: translate3d(0,0,0) scale(1); }
-    20%  { transform: translate3d(-8px, 6px, 0) scale(1.02); }
-    40%  { transform: translate3d(10px, -7px, 0) scale(1.03); }
-    60%  { transform: translate3d(-9px, 8px, 0) scale(1.02); }
-    80%  { transform: translate3d(6px, -5px, 0) scale(1.015); }
-    100% { transform: translate3d(0,0,0) scale(1); }
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: -1;
   }
 
   #mensaje {
-    font-size: 2.2rem;
-    max-width: 92%;
+    font-size: 2.8em;
+    max-width: 90%;
     text-align:center;
-    padding: 20px 28px;
-    background: #fff;
-    border-radius: 20px;
-    line-height:1.08;
-    color: #000;
+    padding:22px 30px;
+    background:#fff;
+    border-radius:25px;
+    color:#000;
+    line-height:1.1;
 
-    /* sombras con tonos neón parecidos al original pero sin exagerar */
-    box-shadow:
-      0 0 12px rgba(255,0,255,0.25),
-      0 0 20px rgba(0,255,255,0.18),
-      0 0 28px rgba(0,255,106,0.12);
+    box-shadow: 
+      0 0 12px #ff00ff,
+      0 0 20px #00ffff,
+      0 0 28px #00ff6a,
+      0 0 40px #ff009d;
 
     animation: glow 1s linear infinite;
-    will-change: box-shadow, transform;
   }
 
   @keyframes glow {
-    0% { box-shadow: 0 0 12px #ff00ff; }
-    50% { box-shadow: 0 0 26px #00ffff; }
-    100% { box-shadow: 0 0 12px #ff00ff; }
-  }
-
-  @media (max-width:420px){
-    #mensaje { font-size:1.25rem; padding:14px 16px; border-radius:14px; }
+    0% {
+      box-shadow:
+        0 0 18px #ff00ff,
+        0 0 30px #00e5ff,
+        0 0 40px #00ff6a,
+        0 0 55px #ff009d;
+    }
+    50% {
+      box-shadow:
+        0 0 26px #00ffff,
+        0 0 38px #ff00ff,
+        0 0 50px #ffea00,
+        0 0 70px #00ff6a;
+    }
+    100% {
+      box-shadow:
+        0 0 18px #ff00ff,
+        0 0 30px #00e5ff,
+        0 0 40px #00ff6a,
+        0 0 55px #ff009d; 
+    }
   }
 </style>
 </head>
+
 <body>
-  <div id="mensaje">Cargando…</div>
 
-  <!-- FIREBASE (módulo) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+<div id="mensaje"></div>
 
-    // --- TU firebaseConfig ---
-    const firebaseConfig = {
-      apiKey: "AIzaSyCJ8sSO65rTjF04Dl7VMEuhrLj_Z9yAICs",
-      authDomain: "undetallis.firebaseapp.com",
-      databaseURL: "https://undetallis-default-rtdb.firebaseio.com",
-      projectId: "undetallis",
-      storageBucket: "undetallis.firebasestorage.app",
-      messagingSenderId: "60709183880",
-      appId: "1:60709183880:web:c7751f216ca7f5ad381a3d",
-      measurementId: "G-5ZQY4JZBGX"
-    };
-    // -----------------------------------------------------
+<script>
+const mensajes = [
+  "Bésale la mejilla a alguien del grupo",
+  "Brinda por la persona más feliz aquí",
+  "Baila 10 segundos sin música como si fueras viral",
+  "Dile algo bonito a quien tienes cerca",
+  "Cuenta un secreto… o inventa uno",
+  "Haz tu mejor pose de foto y mantenla",
+  "Grita tu palabra favorita",
+  "Haz un mini show de 5 segundos",
+  "Mira a quien más te gusta y brinda",
+  "Dale un abrazo al primero que te mire",
+  "Haz un brindis mirando al techo",
+  "Róbale un sorbo a alguien… sin avisar",
+  "Di tu crush en voz alta",
+  "Baila como robot por 8 segundos",
+  "Intercambia tu bebida con alguien",
+  "Invéntate un apodo y dilo fuerte",
+  "Pide un shot que te lo sirva otro",
+  "Cántale algo a una persona random",
+  "Da una vuelta completa con estilo",
+  "Dile a alguien ‘tú brillaste hoy’",
+  "Haz una predicción del futuro",
+  "Choca las copas con tres personas",
+  "Di un secreto… a medias",
+  "Camina en cámara lenta por 5 segundos",
+  "Intercambia accesorios con alguien",
+  "Haz un mini discurso dramático",
+  "Di la primera palabra que te venga a la mente",
+  "Haz contacto visual intenso por 4 segundos",
+  "Pide una selfie grupal",
+  "Di algo en otro idioma inventado",
+  "Imita a alguien del grupo",
+  "Haz un gesto tierno",
+  "Haz un gesto diabólico",
+  "Brinda por el amor propio",
+  "Dedícale tu bebida a alguien",
+  "Repite una frase épica como si fuera cine",
+  "Haz un sonido raro… y no expliques",
+  "Baila sin música por 6 segundos",
+  "Brinda por el pasado",
+  "Brinda por el futuro",
+  "Toca el hombro de alguien y di ‘te elijo’",
+  "Di lo mejor que te pasó hoy",
+  "Haz una risa falsa exagerada",
+  "Adivina el signo de alguien",
+  "Da un pequeño discurso motivador",
+  "Imita un animal por 3 segundos",
+  "Si estás feliz, da un saltico",
+  "Regala un cumplido corto y real",
+  "Di tu edad pero cantado"
+];
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+// Obtener índice anterior (por dispositivo)
+let index = localStorage.getItem("indexMensaje");
 
-    // Mensajes completos (los 120 tal como me los diste)
-    const mensajes = [
-      "Cuenta un secreto… o invéntate uno",
-      "Haz tu mejor pose de foto y mantenla",
-      "Ve a pedirle una canción al DJ",
-      "Dale un abrazo al primero que te mire",
-      "Róbale un sorbo a alguien… sin avisar",
-      "Baila como robot por 8 segundos",
-      "Intercambia tu bebida con alguien",
-      "Haz el 4",
-      "Da 5 giros",
-      "Cambia 1 zapato con alguien del grupo por 1 hora",
-      "Haz una predicción del futuro",
-      "Di la primera palabra que te venga a la mente",
-      "Pide una selfie grupal",
-      "Di algo en otro idioma inventado",
-      "Imita a alguien del grupo",
-      "Haz una risa falsa exagerada",
-      "Imita un animal por 3 segundos",
-      "Di tu edad pero cantado",
-      "Imita un sonido de animal",
-      "Camina 3 pasos como modelo profesional",
-      "Haz un brindis por algo random ya!",
-      "Haz un sonido de trompeta con la boca",
-      "Haz un movimiento raro con las cejas",
-      "Da 5 giros",
-      "Di un cumplido random",
-      "¿Quién fue tu último crush?",
-      "¿Qué es lo primero que notas en alguien?",
-      "¿Cuál ha sido tu mayor metida de pata?",
-      "¿Qué es algo que te da pena admitir?",
-      "¿Qué es lo más loco que has hecho por amor?",
-      "¿Qué es algo que nunca le has contado a nadie?",
-      "¿Cuál ha sido tu sueño más raro?",
-      "¿Cuál fue tu peor cita?",
-      "¿Cuál es tu fantasía más inocente?",
-      "Menciona un secreto chiquito",
-      "¿Quién te parece atractiv@ del grupo?",
-      "¿Cuál es tu tipo de persona ideal?",
-      "¿Qué es lo más atrevido que has hecho en público?",
-      "¿Qué parte de tu cuerpo te gusta más?",
-      "¿Qué te derrite instantáneamente?",
-      "¿Cuál fue tu beso más memorable?",
-      "¿Qué es lo más loco que has enviado por mensaje?",
-      "¿Qué es lo que más te prende de alguien?",
-      "¿Qué es lo más prohibido que has hecho?",
-      "¿Preferirías besar a alguien aquí o mandar un mensaje vergonzoso?",
-      "¿Regresarías con tu ex?",
-      "¿Perdonarías una infidelidad?",
-      "¿Mentirías por alguien que amas?",
-      "¿Qué elegirías: amor o dinero?",
-      "¿Preferirías saber la verdad siempre o vivir feliz sin saber?",
-      "¿Qué prefieres: beso robado o beso lento?",
-      "¿Qué prefieres: alguien celoso o alguien demasiado libre?",
-      "¿Viajar al pasado o al futuro?",
-      "¿Decir siempre la verdad o no poder decir nada?",
-      "¿Amor intenso o amor estable?",
-      "¿Cuál es tu mayor cringe?",
-      "¿Qué te da más vergüenza admitir?",
-      "¿Cuál fue tu peor look de la vida?",
-      "Imita un sonido que te dé pena",
-      "¿Cuál es tu apodo más feo?",
-      "¿Qué rumor ridículo han dicho de ti?",
-      "¿Qué mentira piadosa dices siempre?",
-      "¿Cuál es tu guilty pleasure?",
-      "¿Qué comida te encanta pero te da pena pedir?",
-      "¿Cuál es tu verdadero yo tóxico?",
-      "Mira a alguien fijo por 5 segundos y pídele que confiese algo",
-      "Di la primera palabra que pienses… y explícalo",
-      "Di algo bonito de la persona a tu derecha",
-      "Imita a tu crush imaginario",
-      "Describe tu cita ideal en 10 segundos",
-      "Cuenta un secreto en clave",
-      "Di tu confesión susurrándola",
-      "Da un halago sincero a alguien del grupo",
-      "Haz una confesión usando solo 3 palabras",
-      "Explica tu última conversación rara de WhatsApp",
-      "¿Qué te gustaría cambiar de tu pasado?",
-      "¿Qué te da miedo que la gente descubra?",
-      "¿Qué te falta para ser feliz?",
-      "¿Qué te arrepientes de no haber dicho?",
-      "¿Qué te motiva más en la vida?",
-      "¿Qué herida del pasado aún te afecta?",
-      "¿Cuál ha sido tu momento más vulnerable?",
-      "¿Qué estás evitando últimamente?",
-      "¿A quién extrañas pero no contactas?",
-      "¿Qué te gustaría decirle a alguien pero no te atreves?",
-      "¿Qué es algo que quisieras intentar pero te da pena?",
-      "¿Qué es lo más impulsivo que has hecho?",
-      "¿Quién aquí te intimida un poquito?",
-      "Describe un recuerdo que todavía te da vergüenza",
-      "¿Qué conversación evitaste últimamente?",
-      "¿Qué te enamora sin esfuerzo?",
-      "¿Qué es algo que haces solo cuando nadie te ve?",
-      "Cuenta una mentira obvia como si fuera verdad",
-      "¿Qué es lo que más te cuesta admitir?",
-      "¿Qué canción te da pena aceptar que te gusta?",
-      "¿Quién fue tu amor platónico más raro?",
-      "¿Qué es lo más inmaduro que has hecho por alguien?",
-      "¿Cuál fue tu peor decisión por un impulso?",
-      "Haz una confesión sobre la persona que tengas enfrente",
-      "¿Qué hábito extraño tienes?",
-      "Di algo bonito que nadie sabe de ti",
-      "¿Qué es lo más cursi que has dicho?",
-      "¿Qué te dolió más de tu última relación?",
-      "¿Qué te haría sonrojar ahora mismo?",
-      "¿Cuál sería tu cita perfecta sin gastar dinero?",
-      "Confiesa algo que siempre pospones",
-      "Imita tu reacción cuando ves a alguien que te gusta",
-      "¿Qué es lo más raro que coleccionas o coleccionabas?",
-      "¿Qué te vuelve débil emocionalmente?",
-      "¿Qué mensaje te gustaría recibir hoy?",
-      "¿Qué persona marcó tu vida sin saberlo?",
-      "¿Qué sueño no le has contado a nadie?",
-      "¿Qué aprendiste de tu peor error?",
-      "¿Qué es lo más loco que hiciste estando feliz?",
-      "¿Qué frase te gustaría que alguien te dijera?",
-      "¿Qué hábito de otros te encanta secretamente?",
-      "¿Qué rumor inventarían de ti?",
-      "¿Qué es lo más sincero que has dicho sin querer?",
-      "¿Qué gesto pequeño te enamora?",
-      "¿Qué personalidad te derrite?",
-      "¿Qué es lo que más te cuesta soltar?",
-      "Di una confesión que solo entiendas tú",
-      "¿Qué pensamiento random tuviste hoy?",
-      "¿Qué habilidad tuya subestimas?",
-      "¿Qué parte de tu personalidad ocultas?",
-      "¿Qué cambiarías de tus decisiones pasadas?",
-      "¿Qué secreto gracioso tienes?",
-      "¿Qué harías si hoy fuera tu último día tranquilamente?",
-      "¿Qué es lo más raro que te gusta de alguien?",
-      "¿Qué fue lo último que te hizo sentir vivo?",
-      "¿Qué es lo que siempre quisiste decir y no dijiste?",
-      "¿Qué recuerdo tuyo siempre te hace reír?",
-      "¿Qué cosa inocente te vuelve nervioso?",
-      "¿Qué te gustaría hacer por primera vez este año?",
-      "¿Qué te enamora sin razones?",
-      "¿Cuál fue tu crush más inesperado?",
-      "¿Cuál es tu teoría más loca pero lógica?",
-      "¿Qué es algo que harías si nadie te juzgara?",
-      "¿Qué secreto solo tus amigos cercanos saben?",
-      "¿Qué es lo más ridículo que defendiste alguna vez?",
-      "Di algo que te hubiera gustado escuchar hoy",
-      "¿Qué vibra quieres dejar en las personas?",
-      "¿Qué es lo más valiente que hiciste sin pensarlo?",
-      "¿Qué es lo más honesto que te han dicho?",
-      "¿Qué te da miedo que descubran de ti?",
-      "¿Qué momento de tu vida repetirías?"
-    ];
+if (index === null) index = 0;
+else index = parseInt(index);
 
-    // refs
-    const lastIndexRef = ref(db, "lastIndex");
-    const contadorRef = ref(db, "contadorGlobal");
+// Mostrar mensaje actual
+document.getElementById("mensaje").textContent = mensajes[index];
 
-    // device ID (localStorage)
-    let deviceID = localStorage.getItem("undetallis_device");
-    if (!deviceID) {
-      deviceID = "dev_" + Math.random().toString(36).substring(2,10);
-      localStorage.setItem("undetallis_device", deviceID);
-    }
-    const deviceRef = ref(db, `dispositivos/${deviceID}`);
+// Calcular siguiente
+index++;
+if (index >= mensajes.length) index = 0;
 
-    // main
-    async function cargarYActualizar() {
-      try {
-        // lee ambos
-        const [snapLast, snapCount, snapDevice] = await Promise.all([
-          get(lastIndexRef),
-          get(contadorRef),
-          get(deviceRef)
-        ]);
+// Guardar para la próxima vez
+localStorage.setItem("indexMensaje", index);
+</script>
 
-        const globalIndex = snapLast.exists() ? Number(snapLast.val()) : 0;
-        const deviceIndex = (snapDevice.exists() && snapDevice.val() && snapDevice.val().hasOwnProperty('ultimo'))
-          ? Number(snapDevice.val().ultimo)
-          : null;
-
-        // elegir índice: si el dispositivo ya tenia uno, seguir desde ahí; si no, usar global
-        const indexUsar = (deviceIndex !== null) ? deviceIndex : globalIndex;
-        const mensajeMostrar = mensajes[(indexUsar) % mensajes.length];
-
-        // mostrar
-        document.getElementById("mensaje").textContent = mensajeMostrar;
-
-        // calcular siguiente índice (cíclico)
-        const siguiente = (indexUsar + 1) % mensajes.length;
-
-        // actualizar en firebase: dispositivo, lastIndex y contador
-        const currentCount = snapCount.exists() ? Number(snapCount.val()) : 0;
-
-        // hacemos las 3 escrituras en paralelo
-        await Promise.all([
-          set(deviceRef, { ultimo: siguiente }),
-          set(lastIndexRef, siguiente),
-          set(contadorRef, currentCount + 1)
-        ]);
-      } catch (err) {
-        console.error("Error Firebase:", err);
-        // fallback: mostrar aleatorio si hay fallo
-        document.getElementById("mensaje").textContent =
-          mensajes[Math.floor(Math.random() * mensajes.length)];
-      }
-    }
-
-    // ejecutar
-    cargarYActualizar();
-  </script>
 </body>
 </html>
