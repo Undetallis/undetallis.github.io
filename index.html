@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mensaje Secuencial</title>
+<title>Mensaje Aleatorio</title>
 
 <style>
   body {
@@ -26,7 +26,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('fondo.png');
+    background-image: url('fondo.png'); /* tu fondo */
     background-size: 350px;
     background-repeat: repeat;
     background-position: center;
@@ -85,6 +85,9 @@
 <div id="mensaje"></div>
 
 <script>
+// -------------------------------------------
+// LISTA COMPLETA DE MENSAJES
+// -------------------------------------------
 const mensajes = [
   "Bésale la mejilla a alguien del grupo",
   "Brinda por la persona más feliz aquí",
@@ -134,24 +137,64 @@ const mensajes = [
   "Imita un animal por 3 segundos",
   "Si estás feliz, da un saltico",
   "Regala un cumplido corto y real",
-  "Di tu edad pero cantado"
+  "Di tu edad pero cantado",
+  "Haz una pose épica como si fueras portada de revista",
+  "Brinda mirando a la persona más elegante del grupo",
+  "Imita un sonido de animal durante 3 segundos",
+  "Haz un bailecito de victoria sin razón",
+  "Dile a alguien ‘tú eres energía pura’",
+  "Toma un sorbo con los ojos cerrados",
+  "Haz un gesto de amor dramático con las manos",
+  "Regálale una sonrisa exagerada a alguien",
+  "Toca tu bebida con la de alguien sin hacer ruido",
+  "Haz un mini salto diciendo ‘¡vamos!’",
+  "Haz tu mejor pose de superhéroe",
+  "Brinda por la persona más callada aquí",
+  "Di una palabra rara como si fuera importante",
+  "Camina 3 pasos como modelo profesional",
+  "Haz contacto visual con alguien y guiña",
+  "Dile a alguien ‘hoy estás glowing’",
+  "Inventa una rima sobre tu bebida",
+  "Haz una risa malévola por 2 segundos",
+  "Celebra como si hubieras ganado un premio",
+  "Susurra una palabra épica al oído de alguien",
+  "Ponte serio como si fuera una reunión importante",
+  "Haz un brindis por el presente",
+  "Róbale un cheers a alguien sin que lo espere",
+  "Imita a un personaje de película",
+  "Dile a alguien ‘tu vibra es de campeón’",
+  "Baila 5 segundos como si estuvieras en videoclip",
+  "Invéntate un lema y dilo fuerte",
+  "Toca el hombro de alguien y dile ‘confío en ti’",
+  "Haz un sonido de trompeta con la boca",
+  "Haz un movimiento raro con las cejas",
+  "Regala un aplauso lento a alguien",
+  "Di tu bebida favorita como si fuera poesía",
+  "Haz un brindis mirando al suelo",
+  "Imita una explosión en cámara lenta",
+  "Di algo muy serio… y ríete después",
+  "Gira sobre ti mismo una vez con estilo",
+  "Haz un gesto de sorpresa exagerado",
+  "Dile a alguien ‘tu energía me inspira’",
+  "Baila en cámara lenta por 3 segundos",
+  "Haz tu mejor pose de TikTok",
+  "Di un cumplido que suene misterioso",
+  "Haz un movimiento de robot con un brazo",
+  "Di el nombre de alguien como si lo presentaras en un show",
+  "Haz una reverencia elegante",
+  "Dile a alguien ‘te ganaste un cheers’",
+  "Muévete como si caminaras sobre nubes",
+  "Di tu signo como si fuera ultrasecreto",
+  "Haz un gesto pequeño pero dramático",
+  "Imita el sonido de abrir una botella",
+  "Da un microdiscurso diciendo ‘la vida es hoy’"
 ];
 
-// Obtener índice anterior (por dispositivo)
-let index = localStorage.getItem("indexMensaje");
-
-if (index === null) index = 0;
-else index = parseInt(index);
-
-// Mostrar mensaje actual
-document.getElementById("mensaje").textContent = mensajes[index];
-
-// Calcular siguiente
-index++;
-if (index >= mensajes.length) index = 0;
-
-// Guardar para la próxima vez
-localStorage.setItem("indexMensaje", index);
+// -------------------------------------------
+// MOSTRAR MENSAJE ALEATORIO
+// -------------------------------------------
+const mensajeAleatorio = mensajes[Math.floor(Math.random() * mensajes.length)];
+document.getElementById("mensaje").textContent = mensajeAleatorio;
 </script>
 
 </body>
