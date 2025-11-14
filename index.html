@@ -15,17 +15,23 @@
 </script>
 
 <style>
-  :root { --bg-opacity: 0.28; }
+  :root { --bg-opacity: 0.45; }
 
-  html,body {
-    margin:0; padding:0;
-    height:100%;
+  html,body{height:100%;margin:0;padding:0;}
+  body {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     overflow:hidden;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
     background:#000;
+    color:#000;
+    -webkit-font-smoothing:antialiased;
+    backface-visibility:hidden;
   }
 
-  /* FONDO VIBRACIÓN FLUIDA PARA IOS & ANDROID */
+  /* Fondo JPG (neón + vibración) - optimizado para móviles */
   body::before{
     content:"";
     position:fixed;
@@ -34,48 +40,79 @@
     background-size: cover;
     background-position: center;
     opacity: var(--bg-opacity);
-    z-index:-1;
     pointer-events:none;
-    will-change: transform;
-    animation: vibracionMovil 0.22s infinite linear;
+    z-index:-1;
+
+    /* reduzco la intensidad de filtros en animación para móviles,
+       manteniendo el efecto neón visual */
+    filter: brightness(1.2) contrast(1.4) saturate(1.6);
+
+    will-change: transform, filter;
+    animation:
+      neonPulse 1.6s infinite ease-in-out alternate,
+      shake 2.0s infinite ease-in-out;
   }
 
-  /* Animación ultraligera para móviles */
-  @keyframes vibracionMovil {
-    0%   { transform: translate3d( 0px,  0px, 0); }
-    25%  { transform: translate3d(-1px,  1px, 0); }
-    50%  { transform: translate3d( 1px, -1px, 0); }
-    75%  { transform: translate3d(-1px, -1px, 0); }
-    100% { transform: translate3d( 0px,  0px, 0); }
+  @keyframes neonPulse {
+    0% {
+      filter: brightness(1.12) contrast(1.35) saturate(1.5);
+      /* evito drop-shadow pesado en animación continua para rendimiento */
+    }
+    100% {
+      filter: brightness(1.45) contrast(1.9) saturate(1.9);
+    }
+  }
+
+  /* Shake optimizado: uso translate3d y valores más suaves para 60fps */
+  @keyframes shake {
+    0%   { transform: translate3d(0,0,0) scale(1); }
+    20%  { transform: translate3d(-8px, 6px, 0) scale(1.02); }
+    40%  { transform: translate3d(10px, -7px, 0) scale(1.03); }
+    60%  { transform: translate3d(-9px, 8px, 0) scale(1.02); }
+    80%  { transform: translate3d(6px, -5px, 0) scale(1.015); }
+    100% { transform: translate3d(0,0,0) scale(1); }
   }
 
   #mensaje {
-    font-size: 2rem;
-    max-width: 90%;
-    margin:auto;
+    font-size: 2.2rem;
+    max-width: 92%;
     text-align:center;
-    padding: 22px 28px;
+    padding: 20px 28px;
     background: #fff;
-    border-radius: 18px;
-    line-height:1.12;
-    color:#000;
-    box-shadow: 0 0 20px rgba(255,0,255,0.4);
+    border-radius: 20px;
+    line-height:1.08;
+    color: #000;
+
+    /* sombras con tonos neón parecidos al original pero sin exagerar */
+    box-shadow:
+      0 0 12px rgba(255,0,255,0.25),
+      0 0 20px rgba(0,255,255,0.18),
+      0 0 28px rgba(0,255,106,0.12);
+
+    animation: glow 1s linear infinite;
+    will-change: box-shadow, transform;
   }
 
-  @media (max-width:480px){
-    #mensaje { font-size:1.35rem; padding:16px 18px; }
+  @keyframes glow {
+    0% { box-shadow: 0 0 12px #ff00ff; }
+    50% { box-shadow: 0 0 26px #00ffff; }
+    100% { box-shadow: 0 0 12px #ff00ff; }
+  }
+
+  @media (max-width:420px){
+    #mensaje { font-size:1.25rem; padding:14px 16px; border-radius:14px; }
   }
 </style>
 </head>
-
 <body>
   <div id="mensaje">Cargando…</div>
 
-  <!-- FIREBASE -->
+  <!-- FIREBASE (módulo) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
+    // --- TU firebaseConfig ---
     const firebaseConfig = {
       apiKey: "AIzaSyCJ8sSO65rTjF04Dl7VMEuhrLj_Z9yAICs",
       authDomain: "undetallis.firebaseapp.com",
@@ -86,11 +123,12 @@
       appId: "1:60709183880:web:c7751f216ca7f5ad381a3d",
       measurementId: "G-5ZQY4JZBGX"
     };
+    // -----------------------------------------------------
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    /* ------------- MENSAJES (120) ------------- */
+    // Mensajes completos (los 120 tal como me los diste)
     const mensajes = [
       "Cuenta un secreto… o invéntate uno",
       "Haz tu mejor pose de foto y mantenla",
@@ -240,30 +278,62 @@
       "¿Qué momento de tu vida repetirías?"
     ];
 
+    // refs
     const lastIndexRef = ref(db, "lastIndex");
-    const counterRef = ref(db, "contadorGlobal");
+    const contadorRef = ref(db, "contadorGlobal");
 
-    async function iniciar() {
+    // device ID (localStorage)
+    let deviceID = localStorage.getItem("undetallis_device");
+    if (!deviceID) {
+      deviceID = "dev_" + Math.random().toString(36).substring(2,10);
+      localStorage.setItem("undetallis_device", deviceID);
+    }
+    const deviceRef = ref(db, `dispositivos/${deviceID}`);
+
+    // main
+    async function cargarYActualizar() {
       try {
-        const snap = await get(lastIndexRef);
-        let index = snap.exists() ? snap.val() : 0;
+        // lee ambos
+        const [snapLast, snapCount, snapDevice] = await Promise.all([
+          get(lastIndexRef),
+          get(contadorRef),
+          get(deviceRef)
+        ]);
 
-        document.getElementById("mensaje").textContent = mensajes[index];
+        const globalIndex = snapLast.exists() ? Number(snapLast.val()) : 0;
+        const deviceIndex = (snapDevice.exists() && snapDevice.val() && snapDevice.val().hasOwnProperty('ultimo'))
+          ? Number(snapDevice.val().ultimo)
+          : null;
 
-        const next = (index + 1) % mensajes.length;
-        await set(lastIndexRef, next);
+        // elegir índice: si el dispositivo ya tenia uno, seguir desde ahí; si no, usar global
+        const indexUsar = (deviceIndex !== null) ? deviceIndex : globalIndex;
+        const mensajeMostrar = mensajes[(indexUsar) % mensajes.length];
 
-        const snapCount = await get(counterRef);
-        const count = snapCount.exists() ? snapCount.val() : 0;
-        await set(counterRef, count + 1);
+        // mostrar
+        document.getElementById("mensaje").textContent = mensajeMostrar;
 
+        // calcular siguiente índice (cíclico)
+        const siguiente = (indexUsar + 1) % mensajes.length;
+
+        // actualizar en firebase: dispositivo, lastIndex y contador
+        const currentCount = snapCount.exists() ? Number(snapCount.val()) : 0;
+
+        // hacemos las 3 escrituras en paralelo
+        await Promise.all([
+          set(deviceRef, { ultimo: siguiente }),
+          set(lastIndexRef, siguiente),
+          set(contadorRef, currentCount + 1)
+        ]);
       } catch (err) {
-        console.error(err);
-        document.getElementById("mensaje").textContent = "Error cargando mensaje";
+        console.error("Error Firebase:", err);
+        // fallback: mostrar aleatorio si hay fallo
+        document.getElementById("mensaje").textContent =
+          mensajes[Math.floor(Math.random() * mensajes.length)];
       }
     }
 
-    iniciar();
+    // ejecutar
+    cargarYActualizar();
   </script>
 </body>
 </html>
