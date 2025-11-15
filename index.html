@@ -51,7 +51,7 @@
         100% { transform: translate(-1.5px, 1px) scale(1.015); }
     }
 
-    /* ===== CONTENEDOR DE VIDRIO MEJORADO ===== */
+    /* ===== CONTENEDOR DE VIDRIO ===== */
     #fraseBox {
         position: relative;
         max-width: 85%;
@@ -73,11 +73,10 @@
         font-weight: 800; 
         text-align: center;
         z-index: 10;
-
         overflow: hidden;
     }
 
-    /* Luz y colores dentro del vidrio */
+    /* Luces dentro del vidrio */
     #fraseBox::before {
         content: "";
         position: absolute;
@@ -95,9 +94,43 @@
         0%   { transform: translate(-25px, -25px) scale(1.15); }
         100% { transform: translate(25px, 25px) scale(1.25); }
     }
+
+    /* ====================== */
+    /* ANIMACIONES DE FRASE   */
+    /* ====================== */
+    .fadeInUp {
+        animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .fadeOutDown {
+        animation: fadeOutDown 0.8s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(25px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeOutDown {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-25px);
+        }
+    }
+
 </style>
 
-<!-- ==== FIREBASE ==== -->
+<!-- ==== FIREBASE + FRASES ==== -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
     import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
@@ -116,7 +149,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    /* ===== AQUÍ ESTÁN TODAS TUS 120 FRASES COMPLETAS ===== */
+    /* ===== TODAS LAS FRASES (120) ===== */
     const frases = [
 "¿Quién fue tu último crush?",
 "¿Qué es lo primero que notas en alguien?",
@@ -210,7 +243,7 @@
 "¿Qué frase te gustaría que alguien te dijera?",
 "¿Qué hábito de otros te encanta secretamente?",
 "¿Qué rumor inventarían de ti?",
-"¿Qué es lo más sincero que has dicho sin querer?",
+"¿Qué es lo most sincero que has dicho sin querer?",
 "¿Qué gesto pequeño te enamora?",
 "¿Qué personalidad te derrite?",
 "¿Qué es lo que más te cuesta soltar?",
@@ -224,15 +257,15 @@
 "¿Qué es lo más raro que te gusta de alguien?",
 "¿Qué fue lo último que te hizo sentir vivo?",
 "¿Qué es lo que siempre quisiste decir y no dijiste?",
-"¿Qué recuerdo tuyo siempre te hace reír?",
+"¿Qué recuerdo siempre te hace reír?",
 "¿Qué cosa inocente te vuelve nervioso?",
 "¿Qué te gustaría hacer por primera vez este año?",
 "¿Qué te enamora sin razones?",
 "¿Cuál fue tu crush más inesperado?",
 "¿Cuál es tu teoría más loca pero lógica?",
-"¿Qué es algo que harías si nadie te juzgara?",
+"¿Qué harías si nadie te juzgara?",
 "¿Qué secreto solo tus amigos cercanos saben?",
-"¿Qué es lo más ridículo que defendiste alguna vez?",
+"¿Qué es lo más ridículo que defendiste?",
 "Di algo que te hubiera gustado escuchar hoy",
 "¿Qué vibra quieres dejar en las personas?",
 "¿Qué es lo más valiente que hiciste sin pensarlo?",
@@ -241,13 +274,25 @@
 "¿Qué momento de tu vida repetirías?"
     ];
 
+    /* ========== FUNCIÓN CON ANIMACIÓN ========== */
     async function cargarFrase() {
+        const fraseBox = document.getElementById("fraseBox");
+
+        // Animación de salida
+        fraseBox.classList.remove("fadeInUp");
+        fraseBox.classList.add("fadeOutDown");
+
+        await new Promise(resolve => setTimeout(resolve, 600));
+
         const orderRef = ref(db, "globalOrder");
         const snapshot = await get(orderRef);
         let index = snapshot.exists() ? snapshot.val() : 0;
 
-        const frase = frases[index];
-        document.getElementById("fraseBox").innerText = frase;
+        fraseBox.innerText = frases[index];
+
+        // Animación de entrada
+        fraseBox.classList.remove("fadeOutDown");
+        fraseBox.classList.add("fadeInUp");
 
         index = (index + 1) % frases.length;
         set(orderRef, index);
