@@ -78,6 +78,12 @@
         /* Animación suave del texto */
         animation: suaveTexto 1.6s ease-in-out infinite alternate;
     }
+               /* Animación de entrada al cargar (fade + slide) */
+            animation: entrada 1.2s ease forwards,
+                       suave 2.5s ease-in-out infinite alternate;
+            opacity: 0; /* para la animación de entrada */
+        }
+    
 
     /* Ajuste para pantallas pequeñas */
     @media (max-width: 600px) {
