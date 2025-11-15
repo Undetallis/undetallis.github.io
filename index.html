@@ -3,97 +3,86 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>UNDETALLIS</title>
+<title>UNDETALLIS — Mensajes Secuenciales</title>
 
-<!-- Google Font: Archivo Black -->
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
+<!-- ==== ESTILOS ==== -->
 <style>
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Archivo Black', sans-serif;
-  background: url('assets/fondo.jpg') center center / cover no-repeat fixed;
-  animation: wiggleBackground 0.8s infinite ease-in-out;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+    body {
+        margin: 0;
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: black;
+        font-family: "Arial", sans-serif;
+    }
 
-/* Wiggle suave */
-@keyframes wiggleBackground {
-  0%   { transform: translate(0px, 0px) scale(1.02); }
-  25%  { transform: translate(-2px, 1px) scale(1.02); }
-  50%  { transform: translate(2px, -1px) scale(1.025); }
-  75%  { transform: translate(-1px, -2px) scale(1.02); }
-  100% { transform: translate(1px, 2px) scale(1.02); }
-}
+    /* Fondo con wiggle suave y rápido */
+    #fondo {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 110%;
+        width: 110%;
+        background-image: url('assets/fondo.jpg');
+        background-size: cover;
+        background-position: center;
+        animation: wiggle 0.28s infinite ease-in-out alternate;
+        filter: blur(2px);
+        z-index: -1;
+    }
 
-/* Contenedor del mensaje */
-#fraseBox {
-  width: 90%;
-  max-width: 800px;
-  padding: 30px;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 25px;
-  text-align: center;
-  color: #000000;
-  font-size: 2rem;
-  line-height: 1.3;
-  box-shadow: 0 0 20px rgba(0,255,255,0.7), 0 0 40px rgba(0,255,255,0.4);
-  backdrop-filter: blur(8px);
-  animation: fadeIn 0.6s ease-out, neonPulse 2s infinite alternate ease-in-out;
-}
+    @keyframes wiggle {
+        0%   { transform: translate(-3px, -3px) scale(1.03); }
+        25%  { transform: translate(3px, -2px) scale(1.02); }
+        50%  { transform: translate(-2px, 3px) scale(1.03); }
+        75%  { transform: translate(2px, 2px) scale(1.02); }
+        100% { transform: translate(-3px, 2px) scale(1.03); }
+    }
 
-/* Pulso neon */
-@keyframes neonPulse {
-  0% { box-shadow: 0 0 16px rgba(0,255,255,0.5); }
-  100% { box-shadow: 0 0 28px rgba(0,255,255,0.9); }
-}
+    /* Caja de texto centrada */
+    #fraseBox {
+        position: absolute;
+        max-width: 88%;
+        padding: 25px 35px;
+        background: white;
+        color: black;
+        font-size: 30px;
+        text-align: center;
+        border-radius: 18px;
+        box-shadow: 0 0 20px rgb(0,255,255), 0 0 40px rgb(0,255,255);
+        animation: glow 1.5s ease-in-out infinite alternate;
+    }
 
-/* Fade para cambio de frases */
-.fade {
-  animation: fadeIn 0.6s ease-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.97); }
-  to { opacity: 1; transform: scale(1); }
-}
+    @keyframes glow {
+        0% { box-shadow: 0 0 10px cyan, 0 0 20px cyan; }
+        100% { box-shadow: 0 0 25px cyan, 0 0 50px cyan; }
+    }
 </style>
-</head>
 
-<body>
+<!-- ==== FIREBASE ==== -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 
-<div id="fraseBox">Cargando...</div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJ8sSO65rTjF04Dl7VMEuhrLj_Z9yAICs",
+      authDomain: "undetallis.firebaseapp.com",
+      databaseURL: "https://undetallis-default-rtdb.firebaseio.com",
+      projectId: "undetallis",
+      storageBucket: "undetallis.firebasestorage.app",
+      messagingSenderId: "60709183880",
+      appId: "1:60709183880:web:c7751f216ca7f5ad381a3d",
+      measurementId: "G-5ZQY4JZBGX"
+    };
 
-<script>
-// ------------------------------------------
-// Firebase CONFIG
-// ------------------------------------------
-const firebaseConfig = {
-  apiKey: "AIzaSyCJ8sSO65rTjF04Dl7VMEuhrLj_Z9yAICs",
-  authDomain: "undetallis.firebaseapp.com",
-  databaseURL: "https://undetallis-default-rtdb.firebaseio.com",
-  projectId: "undetallis",
-  storageBucket: "undetallis.firebasestorage.app",
-  messagingSenderId: "60709183880",
-  appId: "1:60709183880:web:c7751f216ca7f5ad381a3d",
-  measurementId: "G-5ZQY4JZBGX"
-};
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const ref = db.ref("contador");
-
-// ------------------------------------------
-// TUS 120 FRASES – SIN NUMERACIÓN
-// ------------------------------------------
-const frases = [
+    /* ===== TUS 120 FRASES ===== */
+    const frases = [
 "¿Quién fue tu último crush?",
 "¿Qué es lo primero que notas en alguien?",
 "¿Cuál ha sido tu mayor metida de pata?",
@@ -215,34 +204,27 @@ const frases = [
 "¿Qué es lo más honesto que te han dicho?",
 "¿Qué te da miedo que descubran de ti?",
 "¿Qué momento de tu vida repetirías?"
-];
+    ];
 
-// ------------------------------------------
-// Mostrar frase desde Firebase (sincronizado)
-// ------------------------------------------
-const fraseBox = document.getElementById("fraseBox");
+    async function cargarFrase() {
+        const orderRef = ref(db, "globalOrder");
 
-ref.on("value", snap => {
-  let i = snap.val();
-  if (i === null) return;
+        const snapshot = await get(orderRef);
+        let index = snapshot.exists() ? snapshot.val() : 0;
 
-  const frase = frases[i % frases.length];
+        const frase = frases[index];
+        document.getElementById("fraseBox").innerText = frase;
 
-  fraseBox.classList.remove("fade");
-  void fraseBox.offsetWidth;
-  fraseBox.classList.add("fade");
+        index = (index + 1) % frases.length;
+        set(orderRef, index);
+    }
 
-  fraseBox.textContent = frase;
-});
-
-// Al tocar, avanzar frase global
-document.body.addEventListener("click", () => {
-  ref.transaction(n => {
-    if (n === null) return 0;
-    return (n + 1) % frases.length;
-  });
-});
+    window.onload = cargarFrase;
 </script>
+</head>
 
+<body>
+    <div id="fondo"></div>
+    <div id="fraseBox">Cargando...</div>
 </body>
 </html>
