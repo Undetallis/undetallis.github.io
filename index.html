@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Confesarte Game</title>
 
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+
     <style>
         body {
             margin: 0;
@@ -18,41 +22,62 @@
             /* Fondo JPG desde carpeta /assets */
             background-image: url('assets/fondo.jpg');
             background-size: cover;
-            background-position: center;
             background-repeat: no-repeat;
 
-            /* Oscurecer suavemente */
-            background-color: rgba(0, 0, 0, 0.5);
+            /* Capa oscura */
+            background-color: rgba(0, 0, 0, 0.55);
             background-blend-mode: darken;
 
-            /* Movimiento suave */
-            animation: moveBackground 30s infinite alternate ease-in-out;
+            /* Movimiento suave random */
+            animation: movimientoRandom 18s infinite alternate ease-in-out;
         }
 
-        @keyframes moveBackground {
-            from { background-position: center top; }
-            to { background-position: center bottom; }
+        @keyframes movimientoRandom {
+            0%   { background-position: 50% 50%; }
+            25%  { background-position: 55% 45%; }
+            50%  { background-position: 45% 60%; }
+            75%  { background-position: 52% 40%; }
+            100% { background-position: 48% 55%; }
         }
 
         /* Caja del mensaje */
         #mensaje {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 25px 35px;
-            border-radius: 20px;
-            font-size: 1.8rem;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 28px 40px;
+            border-radius: 22px;
+            font-size: 2rem;
             font-weight: bold;
             color: #000;
-            width: 80%;
-            max-width: 700px;
+            width: 85%;
+            max-width: 750px;
             text-align: center;
+            line-height: 1.3;
 
-            /* EFECTO NEÓN */
+            /* Neón */
             border: 3px solid #fff;
             box-shadow:
-                0 0 8px #00f7ff,
-                0 0 16px #00f7ff,
-                0 0 30px #00f7ff,
-                0 0 50px #00f7ff;
+                0 0 10px #00eaff,
+                0 0 20px #00eaff,
+                0 0 40px #00eaff,
+                0 0 70px #00eaff;
+
+            /* Animación neón */
+            animation: neonPulse 2.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes neonPulse {
+            from {
+                box-shadow:
+                    0 0 8px #00f7ff,
+                    0 0 16px #00f7ff,
+                    0 0 28px #00f7ff;
+            }
+            to {
+                box-shadow:
+                    0 0 14px #00f7ff,
+                    0 0 30px #00f7ff,
+                    0 0 60px #00f7ff;
+            }
         }
     </style>
 </head>
@@ -61,101 +86,162 @@
     <div id="mensaje">Cargando...</div>
 
     <script>
+        /* ----------------- FIREBASE CONFIG ------------------ */
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJ8sSO65rTjF04Dl7VMEuhrLj_Z9yAICs",
+            authDomain: "undetallis.firebaseapp.com",
+            databaseURL: "https://undetallis-default-rtdb.firebaseio.com",
+            projectId: "undetallis",
+            storageBucket: "undetallis.firebasestorage.app",
+            messagingSenderId: "60709183880",
+            appId: "1:60709183880:web:c7751f216ca7f5ad381a3d",
+            measurementId: "G-5ZQY4JZBGX"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+
+        /* ----------------- LISTA: 120 MENSAJES ------------------ */
         const mensajes = [
-            "Confiesa la última vez que mentiste.",
-            "Di el nombre de la persona que más te atrae ahora mismo.",
-            "¿Qué es lo más tóxico que has hecho?",
-            "¿Cuál ha sido tu crush más raro?",
-            "Confiesa un secreto que nunca has dicho.",
-            "¿Qué es lo más vergonzoso que te ha pasado?",
-            "¿Qué es lo que más te excita?",
-            "Confiesa algo que nunca harías sobrio.",
-            "¿Qué es lo que más te arrepientes de haber hecho?",
-            "¿Cuál ha sido tu peor cita?",
-            "¿A quién stalkeas en redes sin que lo sepan?",
-            "Confiesa tu fantasía más random.",
-            "¿Qué es lo que más odias de ti?",
-            "¿Quién fue tu amor imposible?",
-            "Confiesa una red flag que tú tienes.",
-            "¿Qué es lo más ilegal que has hecho?",
-            "¿Cuál ha sido tu peor decisión por amor?",
-            "Confiesa un pensamiento prohibido.",
-            "¿Qué harías si nadie pudiera juzgarte?",
-            "¿A quién le escribirías si estuvieras borracho?",
-            "¿Qué te da celos aunque no quieras admitirlo?",
-            "Confiesa un gusto culposo.",
-            "¿Con qué persona repetirías algo aunque esté mal?",
-            "¿Qué te da más miedo de una relación?",
-            "¿Cuál es tu fantasía que más te da pena aceptar?",
-            "¿Qué es lo más impulsivo que has hecho?",
-            "Confiesa algo que te gustaría probar.",
-            "¿Qué te prende sin explicación lógica?",
-            "¿Con quién te has quedado con ganas de algo?",
-            "¿Qué es lo más infantil que sigues haciendo?",
-            "¿Qué harías si pudieras volver un día al pasado?",
-            "¿A quién le debes una disculpa que nunca diste?",
-            "Confiesa tu mayor inseguridad.",
-            "¿Qué secreto te descubrieron?",
-            "¿Qué rumor sobre ti fue cierto?",
-            "¿Qué es lo que no quieres que nadie sepa?",
-            "¿Qué te gustaría que pasara ahora mismo?",
-            "¿Quién te ha gustado que no debía gustarte?",
-            "Confiesa la cosa más loca que has hecho por alguien.",
-            "¿Qué perderías si hoy te fuera mal?",
-            "¿Qué te hace sentir vulnerable?",
-            "¿Quién te decepcionó más en la vida?",
-            "¿Qué mentira sigues diciendo?",
-            "Confiesa tu pensamiento más oscuro.",
-            "¿Qué te enamora más rápidamente?",
-            "¿Qué es lo más raro que te gusta en alguien?",
-            "¿Qué te da más pena admitir que te gusta?",
-            "¿Qué volverías a hacer aunque saliera mal?",
-            "¿Qué secreto familiar sabes?",
-            "Confiesa el mensaje que nunca enviaste.",
-            "¿Qué deseo pedirías si solo tuvieras uno?",
-            "¿Qué error volverías a cometer?",
-            "¿Qué persona te marcó sin saberlo?",
-            "¿Qué verdad te dolió aceptar?",
-            "¿Qué cambiarías de tu pasado?",
-            "¿Qué te gusta pero temes decir?",
-            "Confiesa qué te cuesta soltar.",
-            "¿Qué te arrepientes de no haber hecho?",
-            "¿De qué te culpas en silencio?",
-            "¿Qué le ocultas a todos?",
-            "¿Qué sientes que nadie entiende de ti?",
-            "¿Qué te gustaría que alguien te dijera?",
-            "¿Qué te cuesta perdonar?",
-            "¿Qué secreto te pesa?",
-            "¿De qué te sientes orgulloso en secreto?",
-            "Confiesa un pensamiento que te da vergüenza.",
-            "¿Qué emoción escondes más?",
-            "¿Qué es lo más maduro que has hecho?",
-            "¿Qué verdad no soportaste escuchar?",
-            "¿Qué te hace sentir querido?",
-            "¿Qué te gustaría olvidar?"
+
+"¿Quién fue tu último crush?",
+"¿Qué es lo primero que notas en alguien?",
+"¿Cuál ha sido tu mayor metida de pata?",
+"¿Qué es algo que te da pena admitir?",
+"¿Qué es lo más loco que has hecho por amor?",
+"¿Qué es algo que nunca le has contado a nadie?",
+"¿Cuál ha sido tu sueño más raro?",
+"¿Cuál fue tu peor cita?",
+"¿Cuál es tu fantasía más inocente?",
+"Menciona un secreto chiquito",
+"¿Quién te parece atractiv@ del grupo?",
+"¿Cuál es tu tipo de persona ideal?",
+"¿Qué es lo más atrevido que has hecho en público?",
+"¿Qué parte de tu cuerpo te gusta más?",
+"¿Qué te derrite instantáneamente?",
+"¿Cuál fue tu beso más memorable?",
+"¿Qué es lo más loco que has enviado por mensaje?",
+"¿Qué es lo que más te prende de alguien?",
+"¿Qué es lo más prohibido que has hecho?",
+"¿Preferirías besar a alguien aquí o mandar un mensaje vergonzoso?",
+"¿Regresarías con tu ex?",
+"¿Perdonarías una infidelidad?",
+"¿Mentirías por alguien que amas?",
+"¿Qué elegirías: amor o dinero?",
+"¿Preferirías saber la verdad siempre o vivir feliz sin saber?",
+"¿Qué prefieres: beso robado o beso lento?",
+"¿Qué prefieres: alguien celoso o alguien demasiado libre?",
+"¿Viajar al pasado o al futuro?",
+"¿Decir siempre la verdad o no poder decir nada?",
+"¿Amor intenso o amor estable?",
+"¿Cuál es tu mayor cringe?",
+"¿Qué te da más vergüenza admitir?",
+"¿Cuál fue tu peor look de la vida?",
+"Imita un sonido que te dé pena",
+"¿Cuál es tu apodo más feo?",
+"¿Qué rumor ridículo han dicho de ti?",
+"¿Qué mentira piadosa dices siempre?",
+"¿Cuál es tu guilty pleasure?",
+"¿Qué comida te encanta pero te da pena pedir?",
+"¿Cuál es tu verdadero yo tóxico?",
+"Mira a alguien fijo por 5 segundos y pídele que confiese algo",
+"Di la primera palabra que pienses… y explícalo",
+"Di algo bonito de la persona a tu derecha",
+"Imita a tu crush imaginario",
+"Describe tu cita ideal en 10 segundos",
+"Cuenta un secreto en clave",
+"Di tu confesión susurrándola",
+"Da un halago sincero a alguien del grupo",
+"Haz una confesión usando solo 3 palabras",
+"Explica tu última conversación rara de WhatsApp",
+"¿Qué te gustaría cambiar de tu pasado?",
+"¿Qué te da miedo que la gente descubra?",
+"¿Qué te falta para ser feliz?",
+"¿Qué te arrepientes de no haber dicho?",
+"¿Qué te motiva más en la vida?",
+"¿Qué herida del pasado aún te afecta?",
+"¿Cuál ha sido tu momento más vulnerable?",
+"¿Qué estás evitando últimamente?",
+"¿A quién extrañas pero no contactas?",
+"¿Qué te gustaría decirle a alguien pero no te atreves?",
+"¿Qué es algo que quisieras intentar pero te da pena?",
+"¿Qué es lo más impulsivo que has hecho?",
+"¿Quién aquí te intimida un poquito?",
+"Describe un recuerdo que todavía te da vergüenza",
+"¿Qué conversación evitaste últimamente?",
+"¿Qué te enamora sin esfuerzo?",
+"¿Qué es algo que haces solo cuando nadie te ve?",
+"Cuenta una mentira obvia como si fuera verdad",
+"¿Qué es lo que más te cuesta admitir?",
+"¿Qué canción te da pena aceptar que te gusta?",
+"¿Quién fue tu amor platónico más raro?",
+"¿Qué es lo más inmaduro que has hecho por alguien?",
+"¿Cuál fue tu peor decisión por un impulso?",
+"Haz una confesión sobre la persona que tengas enfrente",
+"¿Qué hábito extraño tienes?",
+"Di algo bonito que nadie sabe de ti",
+"¿Qué es lo más cursi que has dicho?",
+"¿Qué te dolió más de tu última relación?",
+"¿Qué te haría sonrojar ahora mismo?",
+"¿Cuál sería tu cita perfecta sin gastar dinero?",
+"Confiesa algo que siempre pospones",
+"Imita tu reacción cuando ves a alguien que te gusta",
+"¿Qué es lo más raro que coleccionas o coleccionabas?",
+"¿Qué te vuelve débil emocionalmente?",
+"¿Qué mensaje te gustaría recibir hoy?",
+"¿Qué persona marcó tu vida sin saberlo?",
+"¿Qué sueño no le has contado a nadie?",
+"¿Qué aprendiste de tu peor error?",
+"¿Qué es lo más loco que hiciste estando feliz?",
+"¿Qué frase te gustaría que alguien te dijera?",
+"¿Qué hábito de otros te encanta secretamente?",
+"¿Qué rumor inventarían de ti?",
+"¿Qué es lo más sincero que has dicho sin querer?",
+"¿Qué gesto pequeño te enamora?",
+"¿Qué personalidad te derrite?",
+"¿Qué es lo que más te cuesta soltar?",
+"Di una confesión que solo entiendas tú",
+"¿Qué pensamiento random tuviste hoy?",
+"¿Qué habilidad tuya subestimas?",
+"¿Qué parte de tu personalidad ocultas?",
+"¿Qué cambiarías de tus decisiones pasadas?",
+"¿Qué secreto gracioso tienes?",
+"¿Qué harías si hoy fuera tu último día tranquilamente?",
+"¿Qué es lo más raro que te gusta de alguien?",
+"¿Qué fue lo último que te hizo sentir vivo?",
+"¿Qué es lo que siempre quisiste decir y no dijiste?",
+"¿Qué recuerdo tuyo siempre te hace reír?",
+"¿Qué cosa inocente te vuelve nervioso?",
+"¿Qué te gustaría hacer por primera vez este año?",
+"¿Qué te enamora sin razones?",
+"¿Cuál fue tu crush más inesperado?",
+"¿Cuál es tu teoría más loca pero lógica?",
+"¿Qué es algo que harías si nadie te juzgara?",
+"¿Qué secreto solo tus amigos cercanos saben?",
+"¿Qué es lo más ridículo que defendiste alguna vez?",
+"Di algo que te hubiera gustado escuchar hoy",
+"¿Qué vibra quieres dejar en las personas?",
+"¿Qué es lo más valiente que hiciste sin pensarlo?",
+"¿Qué es lo más honesto que te han dicho?",
+"¿Qué te da miedo que descubran de ti?",
+"¿Qué momento de tu vida repetirías?"
+
         ];
 
-        // Mezclar mensajes al azar
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
 
-        shuffleArray(mensajes);
-
-        let index = 0;
+        /* ----------- MOSTRAR MENSAJE POR FIREBASE ----------- */
         const div = document.getElementById("mensaje");
 
-        function mostrarMensaje() {
-            div.textContent = mensajes[index];
-            index = (index + 1) % mensajes.length;
-        }
+        db.ref("confesarte/index").on("value", (snapshot) => {
+            const i = snapshot.val();
 
-        mostrarMensaje();
-
-        window.onload = mostrarMensaje;
+            if (i !== undefined && i !== null && i >= 0 && i < mensajes.length) {
+                div.textContent = mensajes[i];
+            } else {
+                div.textContent = "Esperando scan NFC...";
+            }
+        });
     </script>
 </body>
 </html>
