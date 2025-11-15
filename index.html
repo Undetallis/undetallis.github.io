@@ -10,8 +10,8 @@
     body {
         margin: 0;
         overflow: hidden;
-        height: 100vh;
-        width: 100vw;
+        height: 50vh;
+        width: 50vw;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -24,8 +24,8 @@
         position: fixed;
         top: 0;
         left: 0;
-        height: 110%;
-        width: 110%;
+        height: 50%;
+        width: 50%;
         background-image: url('assets/fondo.jpg');
         background-size: cover;
         background-position: center;
@@ -50,11 +50,21 @@
         background: white;
         color: black;
         font-size: 30px;
-        font-weight: bold; /* ← NEGRITA */
+        font-weight: bold;
         text-align: center;
         border-radius: 18px;
         box-shadow: 0 0 20px rgb(0,255,255), 0 0 40px rgb(0,255,255);
-        animation: glow 1.5s ease-in-out infinite alternate;
+        animation: glow 1.5s ease-in-out infinite alternate,
+                   vibrate 0.12s infinite ease-in-out; /* ← VIBRACIÓN DEL TEXTO */
+    }
+
+    /* Efecto de vibración suave del texto */
+    @keyframes vibrate {
+        0%   { transform: translate(0px, 0px); }
+        25%  { transform: translate(0.8px, -0.8px); }
+        50%  { transform: translate(-0.8px, 0.8px); }
+        75%  { transform: translate(0.8px, 0.8px); }
+        100% { transform: translate(-0.8px, -0.8px); }
     }
 
     @keyframes glow {
@@ -82,7 +92,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    /* ===== TUS 120 FRASES ===== */
+    /* ===== TUS FRASES ===== */
     const frases = [
 "¿Quién fue tu último crush?",
 "¿Qué es lo primero que notas en alguien?",
