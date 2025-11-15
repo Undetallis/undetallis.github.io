@@ -27,6 +27,10 @@
         justify-content: center;
         background: black;
         font-family: "Arial", sans-serif;
+
+        /* Evita que en móviles se pegue a los bordes */
+        padding: 20px;
+        box-sizing: border-box;
     }
 
     /* Fondo con wiggle más suave (mitad del movimiento) */
@@ -52,19 +56,36 @@
         100% { transform: translate(-1.5px, 1px) scale(1.015); }
     }
 
-    /* Caja de texto centrada modificada */
+    /* Animación suave del texto */
+    @keyframes suave {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-6px); }
+    }
+
+    /* Caja de texto centrada con movimiento suave */
     #fraseBox {
-        position: absolute;
         max-width: 88%;
         padding: 25px 35px;
-        background: white;       /* FONDO BLANCO */
-        color: black;            /* LETRAS NEGRAS */
+        background: white;
+        color: black;
         font-size: 30px;
         font-weight: bold;
         text-align: center;
         border-radius: 18px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.3), 0 0 40px rgba(0,0,0,0.2); /* sombras suaves para resaltar sobre fondo negro */
-        animation: none; /* eliminamos glow si no quieres efecto de neón */
+        box-shadow: 0 0 20px rgba(0,0,0,0.3), 0 0 40px rgba(0,0,0,0.2);
+
+        position: relative;
+
+        /* Movimiento suave */
+        animation: suave 2.5s ease-in-out infinite alternate;
+    }
+
+    /* Ajuste para pantallas pequeñas */
+    @media (max-width: 600px) {
+        #fraseBox {
+            font-size: 22px;
+            padding: 18px 24px;
+        }
     }
 </style>
 
