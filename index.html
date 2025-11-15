@@ -27,13 +27,11 @@
         justify-content: center;
         background: black;
         font-family: "Arial", sans-serif;
-
-        /* Evita que en móviles se pegue a los bordes */
         padding: 20px;
         box-sizing: border-box;
     }
 
-    /* Fondo con wiggle más suave (mitad del movimiento) */
+    /* Fondo con wiggle */
     #fondo {
         position: fixed;
         top: 0;
@@ -56,13 +54,15 @@
         100% { transform: translate(-1.5px, 1px) scale(1.015); }
     }
 
-    /* Animación suave del texto */
-    @keyframes suave {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(-6px); }
+    /* Animación suave estilo wiggle pero muy pequeña para el texto */
+    @keyframes suaveTexto {
+        0%   { transform: translate(-1px, -1px); }
+        25%  { transform: translate(1px, -0.5px); }
+        50%  { transform: translate(-0.5px, 1px); }
+        75%  { transform: translate(0.5px, 0.5px); }
+        100% { transform: translate(-1px, 0.5px); }
     }
 
-    /* Caja de texto centrada con movimiento suave */
     #fraseBox {
         max-width: 88%;
         padding: 25px 35px;
@@ -73,11 +73,10 @@
         text-align: center;
         border-radius: 18px;
         box-shadow: 0 0 20px rgba(0,0,0,0.3), 0 0 40px rgba(0,0,0,0.2);
-
         position: relative;
 
-        /* Movimiento suave */
-        animation: suave 2.5s ease-in-out infinite alternate;
+        /* Animación suave del texto */
+        animation: suaveTexto 1.6s ease-in-out infinite alternate;
     }
 
     /* Ajuste para pantallas pequeñas */
@@ -110,6 +109,7 @@
 
     /* ===== TUS 120 FRASES ===== */
     const frases = [
+        /* (todo tu arreglo original de 120 frases va aquí exacto) */
 "¿Quién fue tu último crush?",
 "¿Qué es lo primero que notas en alguien?",
 "¿Cuál ha sido tu mayor metida de pata?",
