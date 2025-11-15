@@ -1,71 +1,178 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>UNDETALLIS — Mensajes</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UNDETALLIS — Confesarte</title>
 
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        font-family: Arial, sans-serif;
+  <!-- Firebase (compat para simplicidad) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+
+  <style>
+    :root{
+      --neon: #00f7ff;
+      --bg-overlay: rgba(0,0,0,0.45);
     }
 
-    /* Fondo animado en bucle */
-    #fondo {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: -1;
+    html,body{
+      height:100%;
+      margin:0;
+      padding:0;
+      font-family: "Inter", Arial, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      background: #000;
     }
 
-    /* Contenedor centrado */
-    .contenedor {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
-        max-width: 600px;
-        text-align: center;
+    /* Fondo full, vibración muy marcada */
+    .bg {
+      position: fixed;
+      inset: 0;
+      background-image: url("assets/fondo.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+      filter: saturate(1.05) contrast(1.02);
+      animation: bgVibrate 0.08s infinite linear;
+      will-change: transform;
     }
 
-    /* Caja de frase */
-    .frase-box {
-        background: white;
-        padding: 20px 25px;
-        border-radius: 20px;
-        font-size: 24px;
-        font-weight: bold;
-        color: #000;
-        box-shadow: 0 0 25px #00eaff, 0 0 50px #00eaff;
-        border: 3px solid white;
-        animation: neonPulse 2s infinite alternate;
+    @keyframes bgVibrate {
+      0%   { transform: translate(0px, 0px) rotate(0deg) scale(1.00); }
+      10%  { transform: translate(3px, -3px) rotate(-0.6deg) scale(1.005); }
+      20%  { transform: translate(-3px, 4px) rotate(0.8deg) scale(1.006); }
+      30%  { transform: translate(4px, -2px) rotate(-0.5deg) scale(1.004); }
+      40%  { transform: translate(-4px, 3px) rotate(0.6deg) scale(1.007); }
+      50%  { transform: translate(3px, 2px) rotate(-0.4deg) scale(1.002); }
+      60%  { transform: translate(-2px, -3px) rotate(0.5deg) scale(1.003); }
+      70%  { transform: translate(3px, 3px) rotate(-0.6deg) scale(1.005); }
+      80%  { transform: translate(-3px, -2px) rotate(0.7deg) scale(1.006); }
+      90%  { transform: translate(2px, 4px) rotate(-0.3deg) scale(1.004); }
+      100% { transform: translate(0px, 0px) rotate(0deg) scale(1.00); }
     }
 
+    /* overlay para oscurecer */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-overlay);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* contenedor centrado */
+    .wrap {
+      position: relative;
+      z-index: 2;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    /* caja del texto */
+    #texto {
+      width: min(900px, 92%);
+      background: #fff;
+      border-radius: 22px;
+      padding: 30px 36px;
+      font-weight: 700;
+      font-size: clamp(18px, 3.2vw, 28px);
+      color: #000;
+      text-align: center;
+      line-height: 1.2;
+      border: 3px solid rgba(255,255,255,0.98);
+      /* neon glow */
+      box-shadow:
+        0 0 10px rgba(0,247,255,0.12),
+        0 0 30px rgba(0,247,255,0.14),
+        0 0 60px rgba(0,247,255,0.10);
+      /* animacion extra del texto: pulso + leve movimiento */
+      transform-origin: center;
+      animation:
+        neonPulse 1.6s ease-in-out infinite alternate,
+        textFloat 6s ease-in-out infinite;
+      will-change: transform, box-shadow;
+      /* suave borde interior */
+      backdrop-filter: blur(0.2px);
+    }
+
+    /* pulso neon */
     @keyframes neonPulse {
-        0% { box-shadow: 0 0 15px #00eaff; }
-        100% { box-shadow: 0 0 35px #00eaff; }
+      0% {
+        box-shadow:
+          0 0 8px rgba(0,247,255,0.6),
+          0 0 18px rgba(0,247,255,0.45),
+          0 0 40px rgba(0,247,255,0.25);
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        box-shadow:
+          0 0 18px rgba(0,247,255,0.9),
+          0 0 38px rgba(0,247,255,0.7),
+          0 0 80px rgba(0,247,255,0.45);
+        transform: translateY(-4px) scale(1.01);
+      }
     }
-</style>
+
+    /* leve flotar + rotación sutil */
+    @keyframes textFloat {
+      0% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-6px) rotate(-0.6deg); }
+      50% { transform: translateY(3px) rotate(0.5deg); }
+      75% { transform: translateY(-3px) rotate(-0.3deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    /* efecto flicker muy sutil para dar vida */
+    .flicker {
+      display:inline-block;
+      animation: flickerAnim 3.4s steps(2, end) infinite;
+    }
+
+    @keyframes flickerAnim {
+      0% { opacity: 1; filter: drop-shadow(0 0 6px rgba(0,247,255,0.6)); }
+      5% { opacity: 0.95; filter: drop-shadow(0 0 4px rgba(0,247,255,0.55)); }
+      10% { opacity: 1; filter: drop-shadow(0 0 6px rgba(0,247,255,0.6)); }
+      100% { opacity: 1; }
+    }
+
+    /* responsivo: menos padding en pantalla chica */
+    @media (max-width:420px) {
+      #texto { padding: 18px 16px; font-size: 18px; border-radius: 16px; }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="overlay" aria-hidden="true"></div>
 
-<!-- Fondo animado JPG -->
-<img id="fondo" src="assets/fondo.jpg" alt="Fondo" />
+  <main class="wrap">
+    <div id="texto" aria-live="polite"><span class="flicker">Cargando...</span></div>
+  </main>
 
-<div class="contenedor">
-    <div id="frase" class="frase-box">Cargando…</div>
-</div>
+  <script>
+    /* ================== FIREBASE CONFIG ================== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJ8sSO65rTjF04Dl7VMEuhrLj_Z9yAICs",
+      authDomain: "undetallis.firebaseapp.com",
+      databaseURL: "https://undetallis-default-rtdb.firebaseio.com",
+      projectId: "undetallis",
+      storageBucket: "undetallis.firebasestorage.app",
+      messagingSenderId: "60709183880",
+      appId: "1:60709183880:web:c7751f216ca7f5ad381a3d",
+      measurementId: "G-5ZQY4JZBGX"
+    };
 
-<script>
-const mensajes = [
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    /* ================== MENSAJES (120) ================== */
+    const mensajes = [
 "¿Quién fue tu último crush?",
 "¿Qué es lo primero que notas en alguien?",
 "¿Cuál ha sido tu mayor metida de pata?",
@@ -187,16 +294,84 @@ const mensajes = [
 "¿Qué es lo más honesto que te han dicho?",
 "¿Qué te da miedo que descubran de ti?",
 "¿Qué momento de tu vida repetirías?"
-];
+    ];
 
-// Mostrar frase aleatoria inmediato
-function mostrarFrase() {
-    const f = mensajes[Math.floor(Math.random() * mensajes.length)];
-    document.getElementById("frase").innerHTML = f;
-}
+    /* ================== LÓGICA SECUENCIAL GLOBAL ==================
+       - Cada visita realiza UNA transaction atómica que avanza el
+         contador en la DB y devuelve el valor COMMITED (nuevo).
+       - El mensaje mostrado en el dispositivo es el índice anterior:
+         displayedIndex = (newValue - 1 + len) % len
+       - Si la DB está vacía, iniciamos adecuadamente.
+       ============================================================ */
 
-mostrarFrase();
-</script>
+    const ref = db.ref('confesarte/index'); // ruta en Realtime DB
 
+    function showLocalMessage(idx) {
+      const el = document.getElementById('texto');
+      const text = mensajes[idx] || "...";
+      // wrap parte con flicker para mantener efecto
+      el.innerHTML = `<span class="flicker">${escapeHtml(text)}</span>`;
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#39;');
+    }
+
+    // Ejecuta transaction atómica
+    function claimNextMessage(){
+      const len = mensajes.length;
+
+      ref.transaction(function(current){
+        // current = valor actual en la DB (el índice "actual" ya reservado para siguiente)
+        if (current === null || current === undefined || isNaN(current)) {
+          // Si no hay valor, escribimos 1 (el siguiente), lo que implica mostrar el índice 0 aquí.
+          return 1;
+        }
+        // Siguiente valor (cíclico)
+        let next = parseInt(current, 10) + 1;
+        if (next >= len) next = 0;
+        return next;
+      }, function(error, committed, snapshot){
+        if (error) {
+          // Si falla la transacción, mostramos la primera frase como fallback
+          console.error('Transaction failed:', error);
+          try { showLocalMessage(0); } catch(e){}
+          return;
+        }
+        if (!committed) {
+          // No se comprometió, fallback
+          showLocalMessage(0);
+          return;
+        }
+        const newVal = snapshot.val();
+        // El valor comprometido es el "siguiente" para el próximo visitante.
+        // El mensaje que debemos mostrar aquí es (newVal - 1 + len) % len
+        const displayedIndex = ((parseInt(newVal,10) - 1) + len) % len;
+        showLocalMessage(displayedIndex);
+      }, false); // valor: applyLocally=false para evitar doble-trigger localmente
+    }
+
+    // Llamar al cargar la página
+    claimNextMessage();
+
+    /* OPTIONAL: si quieres que cambie automáticamente cada X segundos (descomentar)
+    setInterval(() => {
+      claimNextMessage();
+    }, 10000); // cada 10s
+    */
+
+    // Seguridad visual: si Firebase no responde en 2s, mostrar 1er mensaje
+    setTimeout(() => {
+      const el = document.getElementById('texto');
+      if (el && el.textContent.trim() === '' || el.textContent.includes('Cargando')) {
+        showLocalMessage(0);
+      }
+    }, 2000);
+  </script>
 </body>
 </html>
