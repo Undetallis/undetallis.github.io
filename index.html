@@ -39,7 +39,7 @@
         background-size: cover;
         background-position: center;
         animation: wiggle 1s infinite ease-in-out alternate;
-        filter: blur(4px);
+        filter: blur(6px) brightness(0.6);
         z-index: -2;
     }
 
@@ -51,22 +51,25 @@
         100% { transform: translate(-1.5px, 1px) scale(1.015); }
     }
 
-    /* ===== CONTENEDOR DE VIDRIO (GLASSMORPHISM) ===== */
+    /* ===== CONTENEDOR DE VIDRIO MEJORADO ===== */
     #fraseBox {
         position: relative;
         max-width: 85%;
-        padding: 30px 45px;
-        border-radius: 22px;
+        padding: 35px 50px;
+        border-radius: 25px;
 
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(22px) saturate(180%);
-        -webkit-backdrop-filter: blur(22px) saturate(180%);
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(30px) saturate(250%) brightness(1.4);
+        -webkit-backdrop-filter: blur(30px) saturate(250%) brightness(1.4);
 
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 0 40px rgba(0,0,0,0.6);
+        border: 1.5px solid rgba(255, 255, 255, 0.35);
+        box-shadow: 
+            inset 0 0 20px rgba(255, 255, 255, 0.2),
+            0 0 40px rgba(0,0,0,0.6),
+            0 0 60px rgba(0,0,0,0.4);
 
         color: white;
-        font-size: 33px;
+        font-size: 34px;
         font-weight: 800; 
         text-align: center;
         z-index: 10;
@@ -74,26 +77,23 @@
         overflow: hidden;
     }
 
-    /* ANIMACIÓN DE COLORES DENTRO DEL VIDRIO */
+    /* Luz y colores dentro del vidrio */
     #fraseBox::before {
         content: "";
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 20% 20%, #ff00ff80, transparent),
-                    radial-gradient(circle at 80% 80%, #00eaff80, transparent),
-                    radial-gradient(circle at 40% 70%, #ff8a0080, transparent);
-        animation: coloresMove 6s infinite alternate ease-in-out;
-        filter: blur(40px);
+        background: 
+            radial-gradient(circle at 20% 30%, #ff00ff80, transparent 60%),
+            radial-gradient(circle at 80% 70%, #00eaff80, transparent 60%),
+            radial-gradient(circle at 40% 90%, #ff8a0080, transparent 70%);
+        animation: coloresMove 7s infinite alternate ease-in-out;
+        filter: blur(50px);
         z-index: -1;
     }
 
     @keyframes coloresMove {
-        0% {
-            transform: translate(-20px, -20px) scale(1.1);
-        }
-        100% {
-            transform: translate(20px, 20px) scale(1.2);
-        }
+        0%   { transform: translate(-25px, -25px) scale(1.15); }
+        100% { transform: translate(25px, 25px) scale(1.25); }
     }
 </style>
 
@@ -116,8 +116,130 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    /* ===== LAS 120 FRASES ===== */
-    const frases = [/* … TODAS TUS FRASES COMPLETAS (NO MODIFIQUÉ NADA) … */];
+    /* ===== AQUÍ ESTÁN TODAS TUS 120 FRASES COMPLETAS ===== */
+    const frases = [
+"¿Quién fue tu último crush?",
+"¿Qué es lo primero que notas en alguien?",
+"¿Cuál ha sido tu mayor metida de pata?",
+"¿Qué es algo que te da pena admitir?",
+"¿Qué es lo más loco que has hecho por amor?",
+"¿Qué es algo que nunca le has contado a nadie?",
+"¿Cuál ha sido tu sueño más raro?",
+"¿Cuál fue tu peor cita?",
+"¿Cuál es tu fantasía más inocente?",
+"Menciona un secreto chiquito",
+"¿Quién te parece atractiv@ del grupo?",
+"¿Cuál es tu tipo de persona ideal?",
+"¿Qué es lo más atrevido que has hecho en público?",
+"¿Qué parte de tu cuerpo te gusta más?",
+"¿Qué te derrite instantáneamente?",
+"¿Cuál fue tu beso más memorable?",
+"¿Qué es lo más loco que has enviado por mensaje?",
+"¿Qué es lo que más te prende de alguien?",
+"¿Qué es lo más prohibido que has hecho?",
+"¿Preferirías besar a alguien aquí o mandar un mensaje vergonzoso?",
+"¿Regresarías con tu ex?",
+"¿Perdonarías una infidelidad?",
+"¿Mentirías por alguien que amas?",
+"¿Qué elegirías: amor o dinero?",
+"¿Preferirías saber la verdad siempre o vivir feliz sin saber?",
+"¿Qué prefieres: beso robado o beso lento?",
+"¿Qué prefieres: alguien celoso o alguien demasiado libre?",
+"¿Viajar al pasado o al futuro?",
+"¿Decir siempre la verdad o no poder decir nada?",
+"¿Amor intenso o amor estable?",
+"¿Cuál es tu mayor cringe?",
+"¿Qué te da más vergüenza admitir?",
+"¿Cuál fue tu peor look de la vida?",
+"Imita un sonido que te dé pena",
+"¿Cuál es tu apodo más feo?",
+"¿Qué rumor ridículo han dicho de ti?",
+"¿Qué mentira piadosa dices siempre?",
+"¿Cuál es tu guilty pleasure?",
+"¿Qué comida te encanta pero te da pena pedir?",
+"¿Cuál es tu verdadero yo tóxico?",
+"Mira a alguien fijo por 5 segundos y pídele que confiese algo",
+"Di la primera palabra que pienses… y explícalo",
+"Di algo bonito de la persona a tu derecha",
+"Imita a tu crush imaginario",
+"Describe tu cita ideal en 10 segundos",
+"Cuenta un secreto en clave",
+"Di tu confesión susurrándola",
+"Da un halago sincero a alguien del grupo",
+"Haz una confesión usando solo 3 palabras",
+"Explica tu última conversación rara de WhatsApp",
+"¿Qué te gustaría cambiar de tu pasado?",
+"¿Qué te da miedo que la gente descubra?",
+"¿Qué te falta para ser feliz?",
+"¿Qué te arrepientes de no haber dicho?",
+"¿Qué te motiva más en la vida?",
+"¿Qué herida del pasado aún te afecta?",
+"¿Cuál ha sido tu momento más vulnerable?",
+"¿Qué estás evitando últimamente?",
+"¿A quién extrañas pero no contactas?",
+"¿Qué te gustaría decirle a alguien pero no te atreves?",
+"¿Qué es algo que quisieras intentar pero te da pena?",
+"¿Qué es lo más impulsivo que has hecho?",
+"¿Quién aquí te intimida un poquito?",
+"Describe un recuerdo que todavía te da vergüenza",
+"¿Qué conversación evitaste últimamente?",
+"¿Qué te enamora sin esfuerzo?",
+"¿Qué es algo que haces solo cuando nadie te ve?",
+"Cuenta una mentira obvia como si fuera verdad",
+"¿Qué es lo que más te cuesta admitir?",
+"¿Qué canción te da pena aceptar que te gusta?",
+"¿Quién fue tu amor platónico más raro?",
+"¿Qué es lo más inmaduro que has hecho por alguien?",
+"¿Cuál fue tu peor decisión por un impulso?",
+"Haz una confesión sobre la persona que tengas enfrente",
+"¿Qué hábito extraño tienes?",
+"Di algo bonito que nadie sabe de ti",
+"¿Qué es lo más cursi que has dicho?",
+"¿Qué te dolió más de tu última relación?",
+"¿Qué te haría sonrojar ahora mismo?",
+"¿Cuál sería tu cita perfecta sin gastar dinero?",
+"Confiesa algo que siempre pospones",
+"Imita tu reacción cuando ves a alguien que te gusta",
+"¿Qué es lo más raro que coleccionas o coleccionabas?",
+"¿Qué te vuelve débil emocionalmente?",
+"¿Qué mensaje te gustaría recibir hoy?",
+"¿Qué persona marcó tu vida sin saberlo?",
+"¿Qué sueño no le has contado a nadie?",
+"¿Qué aprendiste de tu peor error?",
+"¿Qué es lo más loco que hiciste estando feliz?",
+"¿Qué frase te gustaría que alguien te dijera?",
+"¿Qué hábito de otros te encanta secretamente?",
+"¿Qué rumor inventarían de ti?",
+"¿Qué es lo más sincero que has dicho sin querer?",
+"¿Qué gesto pequeño te enamora?",
+"¿Qué personalidad te derrite?",
+"¿Qué es lo que más te cuesta soltar?",
+"Di una confesión que solo entiendas tú",
+"¿Qué pensamiento random tuviste hoy?",
+"¿Qué habilidad tuya subestimas?",
+"¿Qué parte de tu personalidad ocultas?",
+"¿Qué cambiarías de tus decisiones pasadas?",
+"¿Qué secreto gracioso tienes?",
+"¿Qué harías si hoy fuera tu último día tranquilamente?",
+"¿Qué es lo más raro que te gusta de alguien?",
+"¿Qué fue lo último que te hizo sentir vivo?",
+"¿Qué es lo que siempre quisiste decir y no dijiste?",
+"¿Qué recuerdo tuyo siempre te hace reír?",
+"¿Qué cosa inocente te vuelve nervioso?",
+"¿Qué te gustaría hacer por primera vez este año?",
+"¿Qué te enamora sin razones?",
+"¿Cuál fue tu crush más inesperado?",
+"¿Cuál es tu teoría más loca pero lógica?",
+"¿Qué es algo que harías si nadie te juzgara?",
+"¿Qué secreto solo tus amigos cercanos saben?",
+"¿Qué es lo más ridículo que defendiste alguna vez?",
+"Di algo que te hubiera gustado escuchar hoy",
+"¿Qué vibra quieres dejar en las personas?",
+"¿Qué es lo más valiente que hiciste sin pensarlo?",
+"¿Qué es lo más honesto que te han dicho?",
+"¿Qué te da miedo que descubran de ti?",
+"¿Qué momento de tu vida repetirías?"
+    ];
 
     async function cargarFrase() {
         const orderRef = ref(db, "globalOrder");
