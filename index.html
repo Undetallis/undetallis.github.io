@@ -19,7 +19,7 @@
         font-family: "Arial", sans-serif;
     }
 
-    /* Fondo con wiggle suave y rápido */
+    /* Fondo con wiggle más suave (mitad del movimiento) */
     #fondo {
         position: fixed;
         top: 0;
@@ -35,11 +35,11 @@
     }
 
     @keyframes wiggle {
-        0%   { transform: translate(-3px, -3px) scale(1.03); }
-        25%  { transform: translate(3px, -2px) scale(1.02); }
-        50%  { transform: translate(-2px, 3px) scale(1.03); }
-        75%  { transform: translate(2px, 2px) scale(1.02); }
-        100% { transform: translate(-3px, 2px) scale(1.03); }
+        0%   { transform: translate(-1.5px, -1.5px) scale(1.015); }
+        25%  { transform: translate(1.5px, -1px) scale(1.01); }
+        50%  { transform: translate(-1px, 1.5px) scale(1.015); }
+        75%  { transform: translate(1px, 1px) scale(1.01); }
+        100% { transform: translate(-1.5px, 1px) scale(1.015); }
     }
 
     /* Caja de texto centrada */
@@ -50,6 +50,7 @@
         background: white;
         color: black;
         font-size: 30px;
+        font-weight: bold; /* ← NEGRITA */
         text-align: center;
         border-radius: 18px;
         box-shadow: 0 0 20px rgb(0,255,255), 0 0 40px rgb(0,255,255);
